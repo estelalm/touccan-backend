@@ -46,7 +46,7 @@ const getUsuarios = async function(){
     try {
         let dados = await usuarioDAO.selectUsuarios()
         let json = {}
-        let i = {}
+        let infosJson = {}
         if (dados) 
         {
             let qnt = 0
@@ -54,7 +54,7 @@ const getUsuarios = async function(){
                 qnt = qnt + 1
             })
             i.quantidade = qnt
-            json.infos = i
+            json.infos = infosJson
             json.usuario = dados
             return json
         } 

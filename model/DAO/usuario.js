@@ -4,7 +4,7 @@ const { sqltag } = require('@prisma/client/runtime/library');
 
 const prisma = new PrismaClient()
 
-const insertUsuario = async function(data){
+const insertUser = async function(data){
     try {
         let sql = `INSERT INTO tbl_usuario(nome, cpf, telefone, cep, email, data_nascimento, senha) VALUES 
         (
@@ -25,7 +25,7 @@ const insertUsuario = async function(data){
     }
 }
 
-const selectUsuarios = async function(){
+const selectUser = async function(){
     try {
         let sql = 'select * from tbl_usuario'
         let rs = await prisma.$queryRawUnsafe(sql)
@@ -36,7 +36,7 @@ const selectUsuarios = async function(){
     }
 }
 
-const selectUsuarioId = async function(id){
+const selectUserId = async function(id){
     try {
         let sql = `SELECT * FROM tbl_usuario WHERE id = ${id}`
         let rs = await prisma.$queryRawUnsafe(sql)
@@ -62,8 +62,8 @@ const lastID = async function(){
     
 }
 module.exports ={
-    insertUsuario,
-    selectUsuarios,
-    selectUsuarioId,
+    insertUser,
+    selectUser,
+    selectUserId,
     lastID
 }
