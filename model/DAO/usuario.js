@@ -51,8 +51,7 @@ const selectUserId = async function(id){
 
 const lastID = async function(){
     try {
-        let sql = `SELECT id FROM tbl_cliente ORDER BY id DESC LIMIT 1;`
-
+        let sql = `SELECT id FROM tbl_usuario ORDER BY id DESC LIMIT 1;`
         let sqlID = await prisma.$queryRawUnsafe(sql)
 
         return sqlID
