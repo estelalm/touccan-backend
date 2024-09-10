@@ -1,7 +1,7 @@
 const usuarioDAO = require('../model/DAO/usuario.js')
 const message = require('./modulo/config.js')
 
-const postUsuario = async function(data, contentType){
+const postUser = async function(data, contentType){
     try {
         if(String(contentType).toLocaleLowerCase() == 'application/json')
         {
@@ -17,11 +17,15 @@ const postUsuario = async function(data, contentType){
                 return message.ERROR_REQUIRED_FIELDS
             } else {
                 let json = {}
-                let rtnDAO = await usuarioDAO.insertUsuario(data)
+                let rtnDAO = await usuarioDAO.insertUser(data)
                 if(rtnDAO)
                 {
-                    let usuarios = await usuarioDAO.selectUsuarios()
-                    json.prov  = usuarios
+                    let lastId = await usuarioDAO.lastID()
+                    console.log(lastId);
+
+                    let idC = lastId[0].id
+                    let user = await usuarioDAO.selectUserId(idC)
+                    json.user  = user
                     json.status = message.SUCCESS_CREATED_ITEM.status
                     json.status_code = message.SUCCESS_CREATED_ITEM.status_code
                     json.message = message.SUCCESS_CREATED_ITEM.message
@@ -42,20 +46,15 @@ const postUsuario = async function(data, contentType){
     }
 }
 
-const getUsuarios = async function(){
+const getUser = async function(){
     try {
-        let dados = await usuarioDAO.selectUsuarios()
+        let dados = await usuarioDAO.selectUser()
         let json = {}
-        let infosJson = {}
         if (dados) 
         {
-            let qnt = 0
-            dados.forEach(element => {
-                qnt = qnt + 1
-            })
-            i.quantidade = qnt
-            json.infos = infosJson
             json.usuario = dados
+            json.status = message.SUCCESS_CREATED_ITEM.status
+            json.status_code = message.SUCCESS_CREATED_ITEM.status_code
             return json
         } 
         else 
@@ -67,25 +66,30 @@ const getUsuarios = async function(){
     }
 }
 
-const getUsuario = async function(id){
+const getUserId = async function(id){
     try {
         let idU = id
-        if (id == '' || idU == null || isNaN(idU) || id == undefined) 
+        if (idU == '' || idU == null || isNaN(idU) || idU == undefined) 
         {
             return message.ERROR_INVALID_ID
         }
         else
         {
-            let rtnUsuario = await usuarioDAO.selectUsuarioId(idU)
+            let json = {}
+            let rtnUsuario = await usuarioDAO.selectUserId(idU)
             if (rtnUsuario) 
             {
                 if (rtnUsuario.length > 0) 
                 {
-                    
+                    const element = rtnUsuario[0]
+                    json.usuario = element
+                    json.status = message.SUCCESS_CREATED_ITEM.status
+                    json.status_code = message.SUCCESS_CREATED_ITEM.status_code
+                    return json
                 } 
                 else 
                 {
-                    
+                    return message.ERROR_NOT_FOUND
                 }
             } 
             else 
@@ -99,6 +103,7 @@ const getUsuario = async function(id){
 }
 
 module.exports = {
-    getUsuarios,
-    postUsuario
+    getUser,
+    postUser,
+    getUserId
 }
