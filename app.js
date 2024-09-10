@@ -20,8 +20,7 @@ const bodyParserJSON = bodyParser.json()
 
 /**Imports */
 const controller_usuario = require('./controller/controller_usuario.js')
-const res = require('express/lib/response.js')
-
+const controller_cliente = require('./controller/controller_cliente.js')
 /** Usuário */
 
 app.post('/1.0/touccan/usuario', cors(), bodyParserJSON, async function(request, response){
@@ -42,6 +41,29 @@ app.get('/1.0/touccan/usuario/:id', cors(), async function(request, response){
     let idUser = request.params.id
     let result = await controller_usuario.getUserId(idUser)
 
+    response.status(result.status_code)
+    response.json(result)
+})
+
+/** Cliente */
+app.post('/1.0/touccan/cliente', cors(), bodyParserJSON, async function(request, response){
+    let contentType = request.headers['content-type']
+    let data = request.body
+    let result = await controller_cliente.postClient(data, contentType)
+    
+    response.status(result.status_code)
+    response.json(result)
+})
+app.get('/1.0/touccan/cliente', cors(), async function(request, response){
+    let result = await controller_cliente.getClient()
+
+    response.status(result.status_code)
+    response.json(result)
+})
+app.get('/1.0/touccan/cliente/:id', cors(), async function(request, response){
+    let idClient = request.params.id
+    let result = await controller_cliente.getClientId(idClient)
+    
     response.status(result.status_code)
     response.json(result)
 })
