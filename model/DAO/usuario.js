@@ -47,6 +47,17 @@ const selectUserId = async function(id){
     }
 }
 
+const selectLogin = async function(email, pw){
+    try {
+        let sql = `SELECT * FROM tbl_usuario WHERE tbl_usuario.email LIKE "%${email}%" AND tbl_usuario.senha LIKE "%${pw}%";`
+        console.log(sql);
+        
+        let rs = await prisma.$queryRawUnsafe(sql)
+        return rs
+    } catch (error) {
+        return false
+    }
+}
 
 
 const lastID = async function(){
@@ -60,9 +71,11 @@ const lastID = async function(){
     }
     
 }
-module.exports ={
+
+module.exports = {
     insertUser,
     selectUser,
     selectUserId,
+    selectLogin,
     lastID
 }

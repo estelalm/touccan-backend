@@ -49,6 +49,15 @@ const selectClienteId = async function(id){
     }
 }
 
+const selectLogin = async function(email, pw){
+    try {
+        let sql = `SELECT * FROM tbl_cliente WHERE tbl_cliente.email LIKE "%${email}%" AND tbl_cliente.senha LIKE "%${ pw }%";`
+        let rs = await prisma.$queryRawUnsafe(sql)
+        return rs
+    } catch (error) {
+        return false
+    }
+}
 
 
 const lastID = async function(){
@@ -66,5 +75,6 @@ module.exports ={
     insertClient,
     selectClient,
     selectClienteId,
+    selectLogin,
     lastID
 }

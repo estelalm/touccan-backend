@@ -44,6 +44,15 @@ app.get('/1.0/touccan/usuario/:id', cors(), async function(request, response){
     response.status(result.status_code)
     response.json(result)
 })
+app.get('/1.0/touccan/login/usuario', cors(), async function(request, response){
+    let emailU = request.query.email
+    let password = request.query.senha
+    let result = await controller_usuario.getUserLogin(emailU, password)
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
 
 /** Cliente */
 app.post('/1.0/touccan/cliente', cors(), bodyParserJSON, async function(request, response){
@@ -67,6 +76,15 @@ app.get('/1.0/touccan/cliente/:id', cors(), async function(request, response){
     response.status(result.status_code)
     response.json(result)
 })
+app.get('/1.0/touccan/login/cliente', cors(), async function(request, response){
+    let emailU = request.query.email
+    let password = request.query.senha
+    let result = await controller_cliente.getClientLogin(emailU, password)
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
 
 app.listen('8080', function(){
     console.log('API funcionando!!')
