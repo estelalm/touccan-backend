@@ -53,8 +53,8 @@ const getUser = async function(){
         if (dados) 
         {
             json.usuario = dados
-            json.status = message.SUCCESS_CREATED_ITEM.status
-            json.status_code = message.SUCCESS_CREATED_ITEM.status_code
+            json.status = message.SUCCESS_FOUND_USER.status
+            json.status_code = message.SUCCESS_FOUND_USER.status_code
             return json
         } 
         else 
@@ -83,8 +83,8 @@ const getUserId = async function(id){
                 {
                     const element = rtnUsuario[0]
                     json.usuario = element
-                    json.status = message.SUCCESS_CREATED_ITEM.status
-                    json.status_code = message.SUCCESS_CREATED_ITEM.status_code
+                    json.status = message.SUCCESS_FOUND_USER.status
+                    json.status_code = message.SUCCESS_FOUND_USER.status_code
                     return json
                 } 
                 else 
@@ -102,8 +102,49 @@ const getUserId = async function(id){
     }
 }
 
+const getUserLogin = async function(email, pw){
+    try {
+        if(
+            email == '' || email == undefined || email == null || 
+            pw == ''    || pw == undefined || pw == null )
+        {
+           return message.ERROR_REQUIRED_FIELDS
+        }
+        else
+        {
+            let emailU = email
+            let password = pw
+            let rtnUsuario = await usuarioDAO.selectLogin(emailU, password)
+            console.log(rtnUsuario);
+            if (rtnUsuario) 
+                {
+                if (rtnUsuario.length > 0) 
+                {
+                    let user = rtnUsuario[0]
+                    let json = {}
+                    json.usuario = user
+                    json.status = message.SUCCESS_FOUND_USER.status
+                    json.status_code = message.SUCCESS_FOUND_USER.status_code
+
+                    return json
+                } 
+                else 
+                {
+                    return message.ERROR_USER_NOT_FOUND
+                }
+            }
+            else
+            {
+                return message.ERROR_INTERNAL_SERVER_DB
+            }
+        }
+    } catch (error) {
+        return message.ERROR_INTERNAL_SERVER
+    }
+}
 module.exports = {
     getUser,
     postUser,
-    getUserId
+    getUserId,
+    getUserLogin
 }
