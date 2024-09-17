@@ -47,9 +47,9 @@ const selectUserId = async function(id){
     }
 }
 
-const selectLogin = async function(email, pw){
+const callLogin = async function(email, pw){
     try {
-        let sql = `SELECT * FROM tbl_usuario WHERE tbl_usuario.email LIKE "%${email}%" AND tbl_usuario.senha LIKE "%${pw}%";`
+        let sql = `CALL sp_login_usuario('${email}', '${pw}');`
         console.log(sql);
         
         let rs = await prisma.$queryRawUnsafe(sql)
@@ -76,6 +76,6 @@ module.exports = {
     insertUser,
     selectUser,
     selectUserId,
-    selectLogin,
+    callLogin,
     lastID
 }
