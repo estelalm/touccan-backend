@@ -103,41 +103,49 @@ const getClientId = async function(id){
     }
 }
 
-const getClientLogin = async function(email, pw){
+const callClientLogin = async function(data, contentType){
     try {
-        if(
-            email == '' || email == undefined || email == null || 
-            pw == ''    || pw == undefined || pw == null )
+        if (String(contentType).toLowerCase() == 'application/json'
+        ) 
         {
-           return message.ERROR_REQUIRED_FIELDS
-        }
-        else
-        {
-            let emailU = email
-            let password = pw
-            let rtnClient = await clienteDAO.selectLogin(emailU, password)
-            console.log(rtnClient);
-            if (rtnClient) 
-                {
-                if (rtnClient.length > 0) 
-                {
-                    let client = rtnClient[0]
-                    let json = {}
-                    json.cliente = client
-                    json.status = message.SUCCESS_FOUND_USER.status
-                    json.status_code = message.SUCCESS_FOUND_USER.status_code
-
-                    return json
-                } 
-                else 
-                {
-                    return message.ERROR_USER_NOT_FOUND
-                }
+            if(
+                data.email == '' || data.email == undefined || data.email == null || data.email > 100 ||
+                data.senha == ''    || data.senha == undefined || data.senha == null || data.senha > 30)
+            {
+               return message.ERROR_REQUIRED_FIELDS
             }
             else
             {
-                return message.ERROR_INTERNAL_SERVER_DB
+                let emailU = data.email
+                let password = data.senha
+                let rtnClient = await clienteDAO.callLogin(emailU, password)
+                console.log(rtnClient);
+                if (rtnClient) 
+                    {
+                    if (rtnClient.length > 0) 
+                    {
+                        let id = rtnClient[0].f0
+                        let json = {}
+                        json.cliente = {id}
+                        json.status = message.SUCCESS_FOUND_USER.status
+                        json.status_code = message.SUCCESS_FOUND_USER.status_code
+    
+                        return json
+                    } 
+                    else 
+                    {
+                        return message.ERROR_USER_NOT_FOUND
+                    }
+                }
+                else
+                {
+                    return message.ERROR_INTERNAL_SERVER_DB
+                }
             }
+        } 
+        else 
+        {
+            return message.ERROR_CONTENT_TYPE
         }
     } catch (error) {
         return message.ERROR_INTERNAL_SERVER
@@ -147,5 +155,5 @@ module.exports = {
     getClient,
     postClient,
     getClientId,
-    getClientLogin
+    callClientLogin
 }

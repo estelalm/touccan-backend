@@ -1,7 +1,7 @@
 /**
  * Autores: Estela Alves, Gustavo de Campos, Nathalia Kawakami
  * Data: 03 set. 2024
- * Versão: 1.0
+ * Versão: 2.0
  * Objetivo: Criação de uma API para manipular dados de uma aplicação de serviços autônomos.
  */
 /** Configurações */
@@ -23,7 +23,7 @@ const controller_usuario = require('./controller/controller_usuario.js')
 const controller_cliente = require('./controller/controller_cliente.js')
 /** Usuário */
 
-app.post('/1.0/touccan/usuario', cors(), bodyParserJSON, async function(request, response){
+app.post('/2.0/touccan/usuario', cors(), bodyParserJSON, async function(request, response){
     let contentType = request.headers['content-type']
     let data = request.body
     let result = await controller_usuario.postUser(data, contentType)
@@ -31,23 +31,23 @@ app.post('/1.0/touccan/usuario', cors(), bodyParserJSON, async function(request,
     response.status(result.status_code)
     response.json(result)
 })
-app.get('/1.0/touccan/usuario', cors(), async function(request, response){
+app.get('/2.0/touccan/usuario', cors(), async function(request, response){
     let result = await controller_usuario.getUser()
 
     response.status(result.status_code)
     response.json(result)
 })
-app.get('/1.0/touccan/usuario/:id', cors(), async function(request, response){
+app.get('/2.0/touccan/usuario/:id', cors(), async function(request, response){
     let idUser = request.params.id
     let result = await controller_usuario.getUserId(idUser)
 
     response.status(result.status_code)
     response.json(result)
 })
-app.get('/1.0/touccan/login/usuario', cors(), async function(request, response){
-    let emailU = request.query.email
-    let password = request.query.senha
-    let result = await controller_usuario.getUserLogin(emailU, password)
+app.post('/2.0/touccan/login/usuario', cors(), bodyParserJSON, async function(request, response){
+    let contentType = request.headers['content-type']
+    let data = request.body 
+    let result = await controller_usuario.postUserLogin(data, contentType)
 
     response.status(result.status_code)
     response.json(result)
@@ -55,7 +55,7 @@ app.get('/1.0/touccan/login/usuario', cors(), async function(request, response){
 
 
 /** Cliente */
-app.post('/1.0/touccan/cliente', cors(), bodyParserJSON, async function(request, response){
+app.post('/2.0/touccan/cliente', cors(), bodyParserJSON, async function(request, response){
     let contentType = request.headers['content-type']
     let data = request.body
     let result = await controller_cliente.postClient(data, contentType)
@@ -63,23 +63,23 @@ app.post('/1.0/touccan/cliente', cors(), bodyParserJSON, async function(request,
     response.status(result.status_code)
     response.json(result)
 })
-app.get('/1.0/touccan/cliente', cors(), async function(request, response){
+app.get('/2.0/touccan/cliente', cors(), async function(request, response){
     let result = await controller_cliente.getClient()
 
     response.status(result.status_code)
     response.json(result)
 })
-app.get('/1.0/touccan/cliente/:id', cors(), async function(request, response){
+app.get('/2.0/touccan/cliente/:id', cors(), async function(request, response){
     let idClient = request.params.id
     let result = await controller_cliente.getClientId(idClient)
     
     response.status(result.status_code)
     response.json(result)
 })
-app.get('/1.0/touccan/login/cliente', cors(), async function(request, response){
-    let emailU = request.query.email
-    let password = request.query.senha
-    let result = await controller_cliente.getClientLogin(emailU, password)
+app.post('/2.0/touccan/login/cliente', cors(), bodyParserJSON, async function(request, response){
+    let contentType = request.headers['content-type']
+    let data = request.body 
+    let result = await controller_cliente.callClientLogin(data, contentType)
 
     response.status(result.status_code)
     response.json(result)
