@@ -1,0 +1,15 @@
+{
+  "usuario": {
+    "id": "1",
+    "nome": "Maria Silva",
+    "cpf": "12345678901",
+    "telefone": "11967123456",
+    "cep": "12345678",
+    "email": "mariasilva12@gmail.com",
+    "data_nascimento": "2001-01-01",
+    "senha": "touccan127",
+    "foto": null,
+    "biografia": null,
+    "habilidade": null
+  }
+}

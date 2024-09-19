@@ -1,0 +1,20 @@
+{
+  "name": "touccan-backend",
+  "version": "1.0.0",
+  "description": "aplicativo de empregos autônomos",
+  "main": "app.js",
+  "scripts": {
+    "build": "npm install",
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.19.1",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "prisma": "^5.19.1"
+  },
+  "devDependencies": {
+    "json-server": "^1.0.0-beta.2"
+  }
+}
