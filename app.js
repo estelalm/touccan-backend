@@ -21,8 +21,9 @@ const bodyParserJSON = bodyParser.json()
 /**Imports */
 const controller_usuario = require('./controller/controller_usuario.js')
 const controller_cliente = require('./controller/controller_cliente.js')
-/** Usuário */
+const controller_bico = require('./controller/controller_bico.js')
 
+/** Usuário */
 app.post('/2.0/touccan/usuario', cors(), bodyParserJSON, async function(request, response){
     let contentType = request.headers['content-type']
     let data = request.body
@@ -85,6 +86,22 @@ app.post('/2.0/touccan/login/cliente', cors(), bodyParserJSON, async function(re
     response.json(result)
 })
 
+/** Bico */
+app.post('/2.0/touccan/bico', cors(), bodyParserJSON, async function(request, response){
+    let contentType = request.headers['content-type']
+    let data = request.body
+    let result = await controller_bico.postBico(data, contentType)
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+app.get('/2.0/touccan/bico', cors(), async function(request,response) {
+    let result = await controller_bico.getBico()
+
+    response.status(result.status_code)
+    response.json(result)
+})
 
 app.listen('8080', function(){
     console.log('API funcionando!!')
