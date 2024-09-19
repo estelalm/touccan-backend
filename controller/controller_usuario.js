@@ -101,6 +101,7 @@ const getUserId = async function(id){
 }
 
 const postUserLogin = async function(data, contentType){
+    console.log(data)
     try {
         if (String(contentType).toLowerCase() == 'application/json'
         ) 
@@ -144,6 +145,7 @@ const postUserLogin = async function(data, contentType){
             return message.ERROR_CONTENT_TYPE
         }
     } catch (error) {
+        console.log(error)
         return message.ERROR_INTERNAL_SERVER
     }
 }
