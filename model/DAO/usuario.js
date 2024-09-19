@@ -49,9 +49,7 @@ const selectUserId = async function(id){
 
 const callLogin = async function(email, pw){
     try {
-        let sql = `CALL sp_login_usuario('${email}', '${pw}');`
-        console.log(sql);
-        
+        let sql = `CALL sp_login_usuario('${email}', '${pw}');`        
         let rs = await prisma.$queryRawUnsafe(sql)
         return rs
     } catch (error) {
