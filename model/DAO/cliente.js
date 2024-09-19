@@ -51,9 +51,7 @@ const selectClienteId = async function(id){
 
 const callLogin = async function(email, pw){
     try {
-        let sql = `CALL sp_login_cliente('${email}', '${pw}');`
-        console.log(sql);
-        
+        let sql = `CALL sp_login_cliente('${email}', '${pw}');`        
         let rs = await prisma.$queryRawUnsafe(sql)
         return rs
     } catch (error) {

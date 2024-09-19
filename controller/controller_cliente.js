@@ -23,7 +23,6 @@ const postClient = async function(data, contentType){
                 if(rtnDAO)
                 {
                     let lastId = await clienteDAO.lastID()
-                    console.log(lastId);
                     let idC = lastId[0].id
                     let client = await clienteDAO.selectClienteId(idC)
                     json.cliente  = client
@@ -119,7 +118,6 @@ const callClientLogin = async function(data, contentType){
                 let emailU = data.email
                 let password = data.senha
                 let rtnClient = await clienteDAO.callLogin(emailU, password)
-                console.log(rtnClient);
                 if (rtnClient) 
                     {
                     if (rtnClient.length > 0) 

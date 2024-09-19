@@ -21,8 +21,6 @@ const postUser = async function(data, contentType){
                 if(rtnDAO)
                 {
                     let lastId = await usuarioDAO.lastID()
-                    console.log(lastId);
-
                     let idC = lastId[0].id
                     let user = await usuarioDAO.selectUserId(idC)
                     json.user  = user
@@ -118,7 +116,6 @@ const postUserLogin = async function(data, contentType){
                 let emailU = data.email
                 let password = data.senha
                 let rtnUsuario = await usuarioDAO.callLogin(emailU, password)
-                console.log(rtnUsuario);
                 if (rtnUsuario) 
                     {
                     if (rtnUsuario.length > 0) 
