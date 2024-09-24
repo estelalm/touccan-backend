@@ -62,6 +62,42 @@ const getBico = async function() {
     }
 }
 
+const getBicoId = async function(id){
+    try {
+        let idU = id
+        if (idU == '' || idU == null || isNaN(idU) || idU == undefined) 
+        {
+            return message.ERROR_INVALID_ID
+        }
+        else
+        {
+            let json = {}
+            let  = await bicoDAO.selectBicoId(idU)
+            if (rtnBico) 
+            {
+                if (rtnBico.length > 0) 
+                {
+                    const element = rtnBico[0]
+                    json.cliente = element
+                    json.status = message.SUCCESS_CREATED_ITEM.status
+                    json.status_code = message.SUCCESS_CREATED_ITEM.status_code
+                    return json
+                } 
+                else 
+                {
+                    return message.ERROR_NOT_FOUND
+                }
+            } 
+            else 
+            {
+                return message.ERROR_INTERNAL_SERVER_DB    
+            }
+        }
+    } catch (error) {
+        return message.ERROR_INTERNAL_SERVER
+    }
+}
+
 module.exports={
     postBico,
     getBico
