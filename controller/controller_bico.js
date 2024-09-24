@@ -1,4 +1,7 @@
 const bicoDAO = require('../model/DAO/bico.js')
+const categoriaDAO = require('../model/DAO/categoria.js')
+const dificuldadeDAO = require('../model/DAO/dificuldade.js')
+const clienteDAO = require('../model/DAO/cliente.js')
 const message = require('./modulo/config.js')
 
 const postBico = async function(data, contentType) {
@@ -23,7 +26,7 @@ const postBico = async function(data, contentType) {
                 let rtnDAO=await bicoDAO.insertBico(data)
                 if(rtnDAO){
                     let lastID = await bicoDAO.lastID()
-                    json.bico=data
+                    json.bico = data
                     json.status=message.SUCCESS_CREATED_ITEM.status
                     json.status_code=message.SUCCESS_CREATED_ITEM.status_code
                     json.message=message.SUCCESS_CREATED_ITEM.message
@@ -72,12 +75,17 @@ const getBicoId = async function(id){
         else
         {
             let json = {}
-            let  = await bicoDAO.selectBicoId(idU)
+            let rtnBico  = await bicoDAO.selectBicoId(idU)
             if (rtnBico) 
             {
                 if (rtnBico.length > 0) 
                 {
-                    const element = rtnBico[0]
+                    let element = rtnBico[0]
+                    let cat = await categoriaDAO.selectCategoryId(element.id_categoria)
+                    element.categoria = cat
+                    let ing = await ingredienteDAO.selectIngredienteByProduto(produto.id_produto)
+                    produto.ingrediente = ing
+
                     json.cliente = element
                     json.status = message.SUCCESS_CREATED_ITEM.status
                     json.status_code = message.SUCCESS_CREATED_ITEM.status_code
