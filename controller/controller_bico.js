@@ -76,15 +76,21 @@ const getBicoId = async function(id){
         {
             let json = {}
             let rtnBico  = await bicoDAO.selectBicoId(idU)
+            console.log(rtnBico)
             if (rtnBico) 
             {
                 if (rtnBico.length > 0) 
                 {
                     let element = rtnBico[0]
                     let cat = await categoriaDAO.selectCategoryId(element.id_categoria)
+                    delete element.id_categoria
                     element.categoria = cat
-                    let ing = await ingredienteDAO.selectIngredienteByProduto(produto.id_produto)
-                    produto.ingrediente = ing
+                    let dif = await dificuldadeDAO.selectDifficultyId(element.id_dificuldade)
+                    delete element.id_dificuldade
+                    element.dificuldade = dif
+                    let cli = await clienteDAO.selectClienteId(element.id_cliente)
+                    delete element.id_cliente
+                    element.cliente = cli
 
                     json.cliente = element
                     json.status = message.SUCCESS_CREATED_ITEM.status
@@ -108,5 +114,6 @@ const getBicoId = async function(id){
 
 module.exports={
     postBico,
-    getBico
+    getBico,
+    getBicoId
 }

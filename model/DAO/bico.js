@@ -40,7 +40,8 @@ const selectAllBicos = async function() {
 
 const selectBicoId = async function(id) {
     try {
-        let sql = `SELECT * FROM tbl_bico WHERE tbl_bico = ${id}`
+        let sql = `SELECT * FROM tbl_bico WHERE tbl_bico.id = ${id}`
+        console.log(sql)
         let rs = await prisma.$queryRawUnsafe(sql)
         return rs
     } catch (error) {

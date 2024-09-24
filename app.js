@@ -106,6 +106,13 @@ app.get('/2.0/touccan/bico', cors(), async function(request,response) {
     response.status(result.status_code)
     response.json(result)
 })
+app.get('/2.0/touccan/bico/:id', cors(), async function(request, response){
+    let idBico = request.params.id
+    let result = await controller_bico.getBicoId(idBico)
+    
+    response.status(result.status_code)
+    response.json(result)
+})
 
 /** CATEGORIA */
 app.get('/2.0/touccan/categoria', cors(), async function(request, response) {
