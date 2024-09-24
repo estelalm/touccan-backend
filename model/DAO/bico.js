@@ -48,6 +48,18 @@ const selectBicoId = async function(id) {
         return false
     }
 }
+
+const selectBicoClientId = async function(id) {
+    try {
+        let sql = `SELECT * FROM tbl_bico WHERE tbl_bico.id_cliente = ${id}`
+        console.log(sql)
+        let rs = await prisma.$queryRawUnsafe(sql)
+        return rs
+    } catch (error) {
+        return false
+    }
+}
+
 const lastID = async function(){
     try {
         let sql = `SELECT id FROM tbl_bico ORDER BY id DESC LIMIT 1;`
@@ -63,5 +75,6 @@ module.exports={
     insertBico,
     selectAllBicos,
     selectBicoId,
+    selectBicoClientId,
     lastID
 }

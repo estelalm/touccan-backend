@@ -4,9 +4,9 @@ const dificuldadeDAO = require('../model/DAO/dificuldade.js')
 const clienteDAO = require('../model/DAO/cliente.js')
 const message = require('./modulo/config.js')
 
-const postBico = async function(data, contentType) {
+const postBico = async function (data, contentType) {
     try {
-        if(String(contentType).toLowerCase()=='application/json'){            
+        if (String(contentType).toLowerCase() == 'application/json') {
             if (
                 data.titulo == '' || data.titulo == undefined || data.titulo == null || data.titulo.length > 100 ||
                 data.descricao == '' || data.descricao == undefined || data.descricao == null || data.descricao.length > 500 ||
@@ -19,18 +19,18 @@ const postBico = async function(data, contentType) {
                 data.id_categoria == '' || data.id_categoria == undefined || data.id_categoria == null ||
                 data.id_cliente == '' || data.id_cliente == undefined || data.id_cliente == null
             )
-                return message.ERROR_REQUIRED_FIELDS   
+                return message.ERROR_REQUIRED_FIELDS
 
-            else{
-                let json={}
-                let rtnDAO=await bicoDAO.insertBico(data)
-                if(rtnDAO){
+            else {
+                let json = {}
+                let rtnDAO = await bicoDAO.insertBico(data)
+                if (rtnDAO) {
                     let lastID = await bicoDAO.lastID()
                     json.bico = data
-                    json.status=message.SUCCESS_CREATED_ITEM.status
-                    json.status_code=message.SUCCESS_CREATED_ITEM.status_code
-                    json.message=message.SUCCESS_CREATED_ITEM.message
-                    json.id=lastID[0].id
+                    json.status = message.SUCCESS_CREATED_ITEM.status
+                    json.status_code = message.SUCCESS_CREATED_ITEM.status_code
+                    json.message = message.SUCCESS_CREATED_ITEM.message
+                    json.id = lastID[0].id
                     return json
                 }
                 else
@@ -45,19 +45,19 @@ const postBico = async function(data, contentType) {
     }
 }
 
-const getBico = async function() {
+const getBico = async function () {
     try {
-        let data=await bicoDAO.selectAllBicos()
-        let json={}
-        if(data){
-            if(data.length>0){
-                json.bicos=data
-                json.quantidade=data.length
-                json.status_code=200
+        let data = await bicoDAO.selectAllBicos()
+        let json = {}
+        if (data) {
+            if (data.length > 0) {
+                json.bicos = data
+                json.quantidade = data.length
+                json.status_code = 200
                 return json
-            }else
+            } else
                 return message.ERROR_NOT_FOUND
-        }else
+        } else
             return message.ERROR_INTERNAL_SERVER_DB
     } catch (error) {
         console.error(error);
@@ -65,22 +65,18 @@ const getBico = async function() {
     }
 }
 
-const getBicoId = async function(id){
+const getBicoId = async function (id) {
     try {
         let idU = id
-        if (idU == '' || idU == null || isNaN(idU) || idU == undefined) 
-        {
+        if (idU == '' || idU == null || isNaN(idU) || idU == undefined) {
             return message.ERROR_INVALID_ID
         }
-        else
-        {
+        else {
             let json = {}
-            let rtnBico  = await bicoDAO.selectBicoId(idU)
+            let rtnBico = await bicoDAO.selectBicoId(idU)
             console.log(rtnBico)
-            if (rtnBico) 
-            {
-                if (rtnBico.length > 0) 
-                {
+            if (rtnBico) {
+                if (rtnBico.length > 0) {
                     let element = rtnBico[0]
                     let cat = await categoriaDAO.selectCategoryId(element.id_categoria)
                     delete element.id_categoria
@@ -96,15 +92,13 @@ const getBicoId = async function(id){
                     json.status = message.SUCCESS_CREATED_ITEM.status
                     json.status_code = message.SUCCESS_CREATED_ITEM.status_code
                     return json
-                } 
-                else 
-                {
+                }
+                else {
                     return message.ERROR_NOT_FOUND
                 }
-            } 
-            else 
-            {
-                return message.ERROR_INTERNAL_SERVER_DB    
+            }
+            else {
+                return message.ERROR_INTERNAL_SERVER_DB
             }
         }
     } catch (error) {
@@ -112,8 +106,54 @@ const getBicoId = async function(id){
     }
 }
 
-module.exports={
+const getBicoClientId = async function (id, contentType) {
+    try {
+        if (String(contentType).toLowerCase() == 'application/json') {
+            let idU = id
+            if (idU == '' || idU == null || isNaN(idU) || idU == undefined) {
+                return message.ERROR_INVALID_ID
+            }
+            else {
+                let json = {}
+                let rtnBico = await bicoDAO.selectBicoClientId(idU)
+                console.log(rtnBico)
+                if (rtnBico) {
+                    if (rtnBico.length > 0) {
+                        let element = rtnBico[0]
+                        let cat = await categoriaDAO.selectCategoryId(element.id_categoria)
+                        delete element.id_categoria
+                        element.categoria = cat
+                        let dif = await dificuldadeDAO.selectDifficultyId(element.id_dificuldade)
+                        delete element.id_dificuldade
+                        element.dificuldade = dif
+                        // let cli = await clienteDAO.selectClienteId(element.id_cliente)
+                        // delete element.id_cliente
+                        // element.cliente = cli
+
+                        json.cliente = element
+                        json.status = message.SUCCESS_CREATED_ITEM.status
+                        json.status_code = message.SUCCESS_CREATED_ITEM.status_code
+                        return json
+                    }
+                    else {
+                        return message.ERROR_NOT_FOUND
+                    }
+                }
+                else {
+                    return message.ERROR_INTERNAL_SERVER_DB
+                }
+            }
+        } else {
+            return message.ERROR_CONTENT_TYPE
+        }
+    } catch (error) {
+        return message.ERROR_INTERNAL_SERVER
+    }
+}
+
+module.exports = {
     postBico,
     getBico,
-    getBicoId
+    getBicoId,
+    getBicoClientId
 }
