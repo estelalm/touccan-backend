@@ -22,6 +22,8 @@ const bodyParserJSON = bodyParser.json()
 const controller_usuario = require('./controller/controller_usuario.js')
 const controller_cliente = require('./controller/controller_cliente.js')
 const controller_bico = require('./controller/controller_bico.js')
+const controller_categoria = require('./controller/controller_categoria.js')
+const controller_dificuldade = require('./controller/controller_dificuldade.js')
 /** Usuário */
 
 app.post('/2.0/touccan/usuario', cors(), bodyParserJSON, async function(request, response){
@@ -105,6 +107,22 @@ app.get('/2.0/touccan/bico', cors(), async function(request,response) {
     response.json(result)
 })
 
+/** CATEGORIA */
+app.get('/2.0/touccan/categoria', cors(), async function(request, response) {
+    let result = await controller_categoria.getCategory()
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+
+/** DIFICULDADE */
+app.get('/2.0/touccan/dificuldade', cors(), async function(request, response) {
+    let result = await controller_dificuldade.getDifficulty()
+
+    response.status(result.status_code)
+    response.json(result)
+})
 
 app.listen('8080', function(){
     console.log('API funcionando!!')
