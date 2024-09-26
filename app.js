@@ -91,7 +91,7 @@ app.post('/2.0/touccan/login/cliente', cors(), bodyParserJSON, async function(re
 
 
 /** Bico */
-app.post('/2.0/touccan/bico', cors(), bodyParserJSON, async function(request, response){
+app.post('/2.0/touccan/bicos', cors(), bodyParserJSON, async function(request, response){
     let contentType = request.headers['content-type']
     let data = request.body
     let result = await controller_bico.postBico(data, contentType)
@@ -106,6 +106,22 @@ app.get('/2.0/touccan/bico', cors(), async function(request,response) {
     response.status(result.status_code)
     response.json(result)
 })
+app.get('/2.0/touccan/bico/:id', cors(), async function(request, response){
+    let idBico = request.params.id
+    let result = await controller_bico.getBicoId(idBico)
+    
+    response.status(result.status_code)
+    response.json(result)
+})
+app.get('/2.0/touccan/bico', cors(), bodyParserJSON, async function(request, response){
+    let contentType = request.headers['content-type']
+    let data = request.body
+    let result = await controller_bico.getBicoId(data.id, contentType)
+    
+    response.status(result.status_code)
+    response.json(result)
+})
+
 
 /** CATEGORIA */
 app.get('/2.0/touccan/categoria', cors(), async function(request, response) {
