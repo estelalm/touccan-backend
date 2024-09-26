@@ -84,7 +84,7 @@ const getBicoId = async function (id) {
                     let dif = await dificuldadeDAO.selectDifficultyId(element.id_dificuldade)
                     delete element.id_dificuldade
                     element.dificuldade = dif
-                    let cli = await clienteDAO.selectClienteId(element.id_cliente)
+                    let cli = await clienteDAO.selectClientForReturnBico(element.id_cliente)
                     delete element.id_cliente
                     element.cliente = cli
 
@@ -119,18 +119,20 @@ const getBicoClientId = async function (id, contentType) {
                 console.log(rtnBico)
                 if (rtnBico) {
                     if (rtnBico.length > 0) {
-                        let element = rtnBico[0]
-                        let cat = await categoriaDAO.selectCategoryId(element.id_categoria)
-                        delete element.id_categoria
-                        element.categoria = cat
-                        let dif = await dificuldadeDAO.selectDifficultyId(element.id_dificuldade)
-                        delete element.id_dificuldade
-                        element.dificuldade = dif
+                        for (let index = 0; index < rtnBico.length; index++) {
+                            const element = rtnBico[index];
+                            let cat = await categoriaDAO.selectCategoryId(element.id_categoria)
+                            delete element.id_categoria
+                            element.categoria = cat
+                            let dif = await dificuldadeDAO.selectDifficultyId(element.id_dificuldade)
+                            delete element.id_dificuldade
+                            element.dificuldade = dif
+                        }
                         // let cli = await clienteDAO.selectClienteId(element.id_cliente)
                         // delete element.id_cliente
                         // element.cliente = cli
 
-                        json.cliente = element
+                        json.bico = rtnBico
                         json.status = message.SUCCESS_CREATED_ITEM.status
                         json.status_code = message.SUCCESS_CREATED_ITEM.status_code
                         return json

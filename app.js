@@ -113,10 +113,10 @@ app.get('/2.0/touccan/bico/:id', cors(), async function(request, response){
     response.status(result.status_code)
     response.json(result)
 })
-app.get('/2.0/touccan/bico', cors(), bodyParserJSON, async function(request, response){
+app.post('/2.0/touccan/bico', cors(), bodyParserJSON, async function(request, response){
     let contentType = request.headers['content-type']
     let data = request.body
-    let result = await controller_bico.getBicoId(data.id, contentType)
+    let result = await controller_bico.getBicoClientId(data.id_cliente, contentType)
     
     response.status(result.status_code)
     response.json(result)
