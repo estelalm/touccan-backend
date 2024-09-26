@@ -51,14 +51,28 @@ const getBico = async function () {
         let json = {}
         if (data) {
             if (data.length > 0) {
-                json.bicos = data
-                json.quantidade = data.length
-                json.status_code = 200
-                return json
+                if (data.length > 0) {
+                    for (let index = 0; index < data.length; index++) {
+                        const element = data[index];
+                        let cat = await categoriaDAO.selectCategoryId(element.id_categoria)
+                        delete element.id_categoria
+                        element.categoria = cat
+                        let dif = await dificuldadeDAO.selectDifficultyId(element.id_dificuldade)
+                        delete element.id_dificuldade
+                        element.dificuldade = dif
+                        let cli = await clienteDAO.selectClientForReturnBico(element.id_cliente)
+                        delete element.id_cliente
+                        element.cliente = cli
+                    }
+                    json.bicos = data
+                    json.quantidade = data.length
+                    json.status_code = 200
+                    return json
+                } else
+                    return message.ERROR_NOT_FOUND
             } else
-                return message.ERROR_NOT_FOUND
-        } else
-            return message.ERROR_INTERNAL_SERVER_DB
+                return message.ERROR_INTERNAL_SERVER_DB
+        }
     } catch (error) {
         console.error(error);
         return message.ERROR_INTERNAL_SERVER
@@ -153,9 +167,29 @@ const getBicoClientId = async function (id, contentType) {
     }
 }
 
+const excluirBico = async(id) => {
+    try {
+      let idU = id
+      if(idU == '' || idU == undefined || isNaN(idU)){
+          return message.ERROR_INVALID_ID 
+      }else{
+             let rtn = await bicoDAO.deleteBico(idU)
+  
+             if(rtn){
+                 return message.SUCCESS_DELETED_ITEM
+             }else{
+                 return message.ERROR_INTERNAL_SERVER_DB 
+             }
+     }
+    } catch (error) {
+     return message.ERROR_INTERNAL_SERVER 
+    }
+}
+
 module.exports = {
     postBico,
     getBico,
     getBicoId,
-    getBicoClientId
+    getBicoClientId,
+    excluirBico
 }
