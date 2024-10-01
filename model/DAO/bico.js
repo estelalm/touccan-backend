@@ -46,7 +46,6 @@ const lastID = async function(){
     } catch (error) {
         return false
     }
-    
 }
 
 module.exports={
