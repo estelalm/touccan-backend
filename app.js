@@ -103,9 +103,26 @@ app.get('/2.0/touccan/bico', cors(), async function(request,response) {
     response.json(result)
 })
 
+app.get('/2.0/touccan/bico/:id', cors(), async function(request, response){
+    let id = request.params.id
+    let result = await controller_bico.getBicoByID(id)
+    
+    response.status(result.status_code)
+    response.json(result)
+})
+
 app.get('/2.0/touccan/bico/cep', cors(), async function(request,response) {
     let cep=request.query.cep
     let result = await controller_bico.getBicoByCEP(cep)
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+app.post('/2.0/touccan/candidato', cors(), bodyParserJSON, async function(request, response){
+    let contentType = request.headers['content-type']
+    let data = request.body
+    let result = await controller_bico.postCandidate(data, contentType)
 
     response.status(result.status_code)
     response.json(result)

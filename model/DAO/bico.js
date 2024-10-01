@@ -27,6 +27,22 @@ const insertBico = async function(data) {
     }
 }
 
+const insertCandidate = async function(data){
+    try {
+        let sql=`INSERT INTO tbl_usuario_bico (id_usuario, id_bico, escolhido)
+            VALUES (
+                '${data.id_user}',
+                '${data.id_bico}',
+                0
+            );`
+        let rs=await prisma.$executeRawUnsafe(sql)
+        return rs
+    } catch (error) {
+        console.error(error);
+        return false
+    }
+}
+
 const selectAllBicos = async function() {
     try {
         let sql=`SELECT * FROM tbl_bico`
@@ -34,6 +50,17 @@ const selectAllBicos = async function() {
         return rs
     } catch (error) {
         console.error(error)
+        return false
+    }
+}
+
+const selectBicoByID = async function(id) {
+    try {
+        let sql = `SELECT * FROM tbl_bico WHERE id = ${id}`
+        let rs = await prisma.$queryRawUnsafe(sql)
+        return rs
+    } catch (error) {
+        console.log(error);
         return false
     }
 }
@@ -50,6 +77,8 @@ const lastID = async function(){
 
 module.exports={
     insertBico,
+    insertCandidate,
+    selectBicoByID,
     selectAllBicos,
     lastID
 }
