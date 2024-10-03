@@ -202,10 +202,86 @@ const getBicoByCEP = async function(cepUser) {
     }
 }
 
+const getBicoByFilter = async function(data, contentType) {
+    try {
+        if(String(contentType).toLowerCase()=='application/json'){            
+            let sql
+            let sqlAux
+            let json={}
+            if(data.turno&&!data.data_inicio){
+                if(data.turno==1)
+                    //MADRUGADA = 1
+                    sql=`WHERE horario_inicio BETWEEN '00:00:00' AND '04:59:59'`
+                else if(data.turno==2)
+                    //MANHÃ = 2
+                    sql=`WHERE horario_inicio BETWEEN '05:00:00' AND '11:59:59'`
+                else if(data.turno==3)
+                    //TARDE = 3
+                    sql=`WHERE horario_inicio BETWEEN '12:00:00' AND '17:59:59'`
+                else if(data.turno==4)
+                    //NOITE = 4
+                    sql=`WHERE horario_inicio BETWEEN '18:00:00' AND '23:59:59'`
+                else
+                    return message.ERROR_REQUIRED_FIELDS
+            }
+            else if(data.data_inicio&&!data.turno){                
+                if(data.data_inicio.length==10)
+                    sql=`WHERE data_inicio='${data.data_inicio}'`
+                else
+                    return message.ERROR_REQUIRED_FIELDS
+            }
+            else if(data.turno&&data.data_inicio){
+                if(data.turno==1)
+                    //MADRUGADA = 1
+                    sql=`WHERE horario_inicio BETWEEN '00:00:00' AND '04:59:59'`
+                else if(data.turno==2)
+                    //MANHÃ = 2
+                    sql=`WHERE horario_inicio BETWEEN '05:00:00' AND '11:59:59'`
+                else if(data.turno==3)
+                    //TARDE = 3
+                    sql=`WHERE horario_inicio BETWEEN '12:00:00' AND '17:59:59'`
+                else if(data.turno==4)
+                    //NOITE = 4
+                    sql=`WHERE horario_inicio BETWEEN '18:00:00' AND '23:59:59'`
+                else
+                    return message.ERROR_REQUIRED_FIELDS
+
+                if(data.data_inicio.length==10)
+                    sqlAux=`data_inicio='${data.data_inicio}'`
+                else
+                    return message.ERROR_REQUIRED_FIELDS
+
+                sql=`${sql} AND ${sqlAux}`
+            }
+            else
+                return message.ERROR_REQUIRED_FIELDS
+            let rsDAO=await bicoDAO.selectBicoByFilter(sql)
+            if(rsDAO){
+                if(rsDAO.length>0){
+                    json.bicos=rsDAO
+                    json.quantidade=rsDAO.length
+                    json.status_code=200
+                    return json
+                }
+                else
+                    return message.ERROR_NOT_FOUND
+            }
+            else
+                return message.ERROR_INTERNAL_SERVER_DB
+        }
+        else
+            return message.ERROR_CONTENT_TYPE
+    } catch (error) {
+        console.error(error);
+        return message.ERROR_INTERNAL_SERVER
+    }
+}
+
 module.exports={
     postBico,
     getBico,
     getBicoByID,
     postCandidate,
-    getBicoByCEP
+    getBicoByCEP,
+    getBicoByFilter
 }

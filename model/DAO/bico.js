@@ -19,8 +19,8 @@ const insertBico = async function(data) {
                 ${data.id_categoria}, 
                 ${data.id_cliente}
             );`
-    let rs=await prisma.$executeRawUnsafe(sql)
-    return rs
+        let rs=await prisma.$executeRawUnsafe(sql)
+        return rs
     } catch (error) {
         console.error(error);
         return false
@@ -65,12 +65,9 @@ const selectBicoByID = async function(id) {
     }
 }
 
-const selectBicoByTime = async function(data){
+const selectBicoByFilter = async function(script){
     try {
-        let sql = `SELECT * FROM tbl_bico
-                   WHERE horario_inicio 
-                   BETWEEN '${data.time_start}' AND '${data.time_end}';
-                `
+        let sql = `SELECT * FROM tbl_bico ${script}`
         let rs = await prisma.$queryRawUnsafe(sql)
         return rs
     } catch (error) {
@@ -94,5 +91,6 @@ module.exports={
     insertCandidate,
     selectBicoByID,
     selectAllBicos,
+    selectBicoByFilter,
     lastID
 }
