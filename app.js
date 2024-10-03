@@ -132,6 +132,7 @@ app.get('/2.0/touccan/bico/filtro', cors(), bodyParserJSON, async function(reque
     let contentType = request.headers['content-type']
     let data = request.body
     let result = await controller_bico.getBicoByFilter(data, contentType)
+    console.log();
     
     response.status(result.status_code)
     response.json(result)

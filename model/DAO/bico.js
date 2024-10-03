@@ -60,7 +60,7 @@ const selectBicoByID = async function(id) {
         let rs = await prisma.$queryRawUnsafe(sql)
         return rs
     } catch (error) {
-        console.log(error);
+        //console.log(error);
         return false
     }
 }

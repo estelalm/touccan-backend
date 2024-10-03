@@ -40,7 +40,7 @@ const postBico = async function(data, contentType) {
         else
             return message.ERROR_CONTENT_TYPE
     } catch (error) {
-        // console.error(error)
+         console.error(error)
         return message.ERROR_INTERNAL_SERVER
     }
 }
