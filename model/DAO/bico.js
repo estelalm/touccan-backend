@@ -65,6 +65,20 @@ const selectBicoByID = async function(id) {
     }
 }
 
+const selectBicoByTime = async function(data){
+    try {
+        let sql = `SELECT * FROM tbl_bico
+                   WHERE horario_inicio 
+                   BETWEEN '${data.time_start}' AND '${data.time_end}';
+                `
+        let rs = await prisma.$queryRawUnsafe(sql)
+        return rs
+    } catch (error) {
+        console.error(error);
+        return false
+    }
+}
+
 const lastID = async function(){
     try {
         let sql = `SELECT id FROM tbl_bico ORDER BY id DESC LIMIT 1;`

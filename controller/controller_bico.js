@@ -45,7 +45,7 @@ const postBico = async function(data, contentType) {
     }
 }
 
-postCandidate = async function(data, contentType){
+const postCandidate = async function(data, contentType){
     try {
         if(String(contentType).toLowerCase()=='application/json'){
             if (
@@ -142,56 +142,60 @@ const getBicoByID = async function(id){
 
 const getBicoByCEP = async function(cepUser) {
     try {
-        //cepUser = '06622310'
-        const url = `https://viacep.com.br/ws/${cepUser}/json/`
-        const response = await axios.get(url)
-        const jsonUser = response.data
-        const clientCEPArray = []
-        const bicos = await getBico()
-        const clients = await controller_cliente.getClient()
-        const clientsAux = clients.cliente
-        const clientsArray = clientsAux.map(cliente => ({
-            id: cliente.id,
-            cep: cliente.cep
-        }))
-        const bicosArray = bicos.bicos
-        for (const bico of bicosArray) {
-            let client = await controller_cliente.getClientId(bico.id_cliente)
-            clientCEPArray.push(client.cliente.cep)
-        }
-        const cepsAccepted = []
-        const promises = clientCEPArray.map(async (cep) => {
-            const url = `https://viacep.com.br/ws/${cep}/json/`
+        if(cepUser.length!=8 || cepUser==null || cepUser==undefined || cepUser=='' || isNaN(cepUser))
+            return message.ERROR_REQUIRED_FIELDS
+        else{
+            //cepUser = '06622310'
+            const url = `https://viacep.com.br/ws/${cepUser}/json/`
             const response = await axios.get(url)
-            const json = response.data
-            if (json.erro) {
-                console.log(`Erro ao buscar CEP ${cep}: ${JSON.stringify(json)}`)
-                return
+            const jsonUser = response.data
+            const clientCEPArray = []
+            const bicos = await getBico()
+            const clients = await controller_cliente.getClient()
+            const clientsAux = clients.cliente
+            const clientsArray = clientsAux.map(cliente => ({
+                id: cliente.id,
+                cep: cliente.cep
+            }))
+            const bicosArray = bicos.bicos
+            for (const bico of bicosArray) {
+                let client = await controller_cliente.getClientId(bico.id_cliente)
+                clientCEPArray.push(client.cliente.cep)
             }
-            if (json.bairro && jsonUser.bairro) {
-                if (json.bairro.toUpperCase() === jsonUser.bairro.toUpperCase()) 
-                    cepsAccepted.push(cep)
-            }
-            if (json.localidade && jsonUser.localidade) {
-                if (json.localidade.toUpperCase() === jsonUser.localidade.toUpperCase()) 
-                    cepsAccepted.push(cep)
-            }
-        })
-        await Promise.all(promises)
-        const idsAccepted = clientsArray
-            .filter(cliente => cepsAccepted.includes(cliente.cep))
-            .map(cliente => cliente.id)
+            const cepsAccepted = []
+            const promises = clientCEPArray.map(async (cep) => {
+                const url = `https://viacep.com.br/ws/${cep}/json/`
+                const response = await axios.get(url)
+                const json = response.data
+                if (json.erro) {
+                    console.log(`Erro ao buscar CEP ${cep}: ${JSON.stringify(json)}`)
+                    return
+                }
+                if (json.bairro && jsonUser.bairro) {
+                    if (json.bairro.toUpperCase() === jsonUser.bairro.toUpperCase()) 
+                        cepsAccepted.push(cep)
+                }
+                if (json.localidade && jsonUser.localidade) {
+                    if (json.localidade.toUpperCase() === jsonUser.localidade.toUpperCase()) 
+                        cepsAccepted.push(cep)
+                }
+            })
+            await Promise.all(promises)
+            const idsAccepted = clientsArray
+                .filter(cliente => cepsAccepted.includes(cliente.cep))
+                .map(cliente => cliente.id)
 
-        const bicosAccepted = bicosArray.filter(bico => idsAccepted.includes(bico.id_cliente))
-        const otherBicos = bicosArray.filter(bico => !idsAccepted.includes(bico.id_cliente))
-        const result = [...bicosAccepted, ...otherBicos]
-        
-        const json={}
-        json.bicos=result
-        json.quantidade=result.length
-        json.status_code=200
+            const bicosAccepted = bicosArray.filter(bico => idsAccepted.includes(bico.id_cliente))
+            const otherBicos = bicosArray.filter(bico => !idsAccepted.includes(bico.id_cliente))
+            const result = [...bicosAccepted, ...otherBicos]
+            
+            const json={}
+            json.bicos=result
+            json.quantidade=result.length
+            json.status_code=200
 
-        return json
+            return json
+        }
     } catch (error) {
         console.error(error)
         return message.ERROR_INTERNAL_SERVER

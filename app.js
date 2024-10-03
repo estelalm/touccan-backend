@@ -111,8 +111,8 @@ app.get('/2.0/touccan/bico/:id', cors(), async function(request, response){
     response.json(result)
 })
 
-app.get('/2.0/touccan/bico/cep', cors(), async function(request,response) {
-    let cep=request.query.cep
+app.get('/2.0/touccan/bico/cep/:cep', cors(), async function(request,response) {
+    let cep=request.params.cep
     let result = await controller_bico.getBicoByCEP(cep)
 
     response.status(result.status_code)
