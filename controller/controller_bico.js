@@ -1,5 +1,10 @@
 const axios = require('axios')
+/** DAO's */
 const bicoDAO = require('../model/DAO/bico.js')
+const categoriaDAO = require('../model/DAO/categoria.js')
+const dificuldadeDAO = require('../model/DAO/dificuldade.js')
+const clienteDAO = require('../model/DAO/cliente.js')
+/** Controller */
 const message = require('./modulo/config.js')
 const controller_cliente = require('./controller_cliente.js')
 const controller_user = require('./controller_usuario.js')
@@ -26,11 +31,10 @@ const postBico = async function(data, contentType) {
                 let rtnDAO=await bicoDAO.insertBico(data)
                 if(rtnDAO){
                     let lastID = await bicoDAO.lastID()
-                    json.bico=data
+                    json.bico =  await bicoDAO.selectBicoByID(lastID[0].id)
                     json.status=message.SUCCESS_CREATED_ITEM.status
                     json.status_code=message.SUCCESS_CREATED_ITEM.status_code
                     json.message=message.SUCCESS_CREATED_ITEM.message
-                    json.id=lastID[0].id
                     return json
                 }
                 else
@@ -92,6 +96,18 @@ const getBico = async function() {
         let json={}
         if(data){
             if(data.length>0){
+                for (let index = 0; index < data.length; index++) {
+                    const element = data[index];
+                    let cat = await categoriaDAO.selectCategoryId(element.id_categoria)
+                    delete element.id_categoria
+                    element.categoria = cat
+                    let dif = await dificuldadeDAO.selectDifficultyId(element.id_dificuldade)
+                    delete element.id_dificuldade
+                    element.dificuldade = dif
+                    let cli = await clienteDAO.selectClientForReturnBico(element.id_cliente)
+                    delete element.id_cliente
+                    element.cliente = cli
+                }
                 json.bicos=data
                 json.quantidade=data.length
                 json.status_code=200
@@ -114,12 +130,22 @@ const getBicoByID = async function(id){
         else
         {
             let json = {}
-            let rtnUsuario = await bicoDAO.selectBicoByID(idU)
-            if (rtnUsuario) 
+            let rtnBico = await bicoDAO.selectBicoByID(idU)
+            if (rtnBico) 
             {
-                if (rtnUsuario.length > 0) 
+                if (rtnBico.length > 0) 
                 {
-                    const element = rtnUsuario[0]
+                    let element = rtnBico[0]
+                    let cat = await categoriaDAO.selectCategoryId(element.id_categoria)
+                    delete element.id_categoria
+                    element.categoria = cat
+                    let dif = await dificuldadeDAO.selectDifficultyId(element.id_dificuldade)
+                    delete element.id_dificuldade
+                    element.dificuldade = dif
+                    let cli = await clienteDAO.selectClientForReturnBico(element.id_cliente)
+                    delete element.id_cliente
+                    element.cliente = cli
+
                     json.bico = element
                     json.status = message.SUCCESS_FOUND_USER.status
                     json.status_code = message.SUCCESS_FOUND_USER.status_code
@@ -277,11 +303,80 @@ const getBicoByFilter = async function(data, contentType) {
     }
 }
 
+const getBicoClientId = async function (id, contentType) {
+    try {
+        if (String(contentType).toLowerCase() == 'application/json') {
+            let idU = id
+            if (idU == '' || idU == null || isNaN(idU) || idU == undefined) {
+                return message.ERROR_INVALID_ID
+            }
+            else {
+                let json = {}
+                let rtnBico = await bicoDAO.selectBicoClientId(idU)
+                console.log(rtnBico)
+                if (rtnBico) {
+                    if (rtnBico.length > 0) {
+                        for (let index = 0; index < rtnBico.length; index++) {
+                            const element = rtnBico[index];
+                            let cat = await categoriaDAO.selectCategoryId(element.id_categoria)
+                            delete element.id_categoria
+                            element.categoria = cat
+                            let dif = await dificuldadeDAO.selectDifficultyId(element.id_dificuldade)
+                            delete element.id_dificuldade
+                            element.dificuldade = dif
+                        }
+                        // let cli = await clienteDAO.selectClienteId(element.id_cliente)
+                        // delete element.id_cliente
+                        // element.cliente = cli
+
+                        json.bico = rtnBico
+                        json.status = message.SUCCESS_CREATED_ITEM.status
+                        json.status_code = message.SUCCESS_CREATED_ITEM.status_code
+                        return json
+                    }
+                    else {
+                        return message.ERROR_NOT_FOUND
+                    }
+                }
+                else {
+                    return message.ERROR_INTERNAL_SERVER_DB
+                }
+            }
+        } else {
+            return message.ERROR_CONTENT_TYPE
+        }
+    } catch (error) {
+        return message.ERROR_INTERNAL_SERVER
+    }
+}
+
+const excluirBico = async(id) => {
+    try {
+      let idU = id
+      if(idU == '' || idU == undefined || isNaN(idU)){
+          return message.ERROR_INVALID_ID 
+      }else{
+             let rtn = await bicoDAO.deleteBico(idU)
+  
+             if(rtn){
+                 return message.SUCCESS_DELETED_ITEM
+             }else{
+                 return message.ERROR_INTERNAL_SERVER_DB 
+             }
+     }
+    } catch (error) {
+     return message.ERROR_INTERNAL_SERVER 
+    }
+}
+
+
 module.exports={
     postBico,
     getBico,
     getBicoByID,
     postCandidate,
     getBicoByCEP,
-    getBicoByFilter
+    getBicoByFilter,
+    getBicoClientId,
+    excluirBico
 }
