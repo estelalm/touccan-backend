@@ -22,7 +22,7 @@ const postBico = async function(data, contentType) {
                 data.salario == '' || data.salario == undefined || data.salario == null || isNaN(data.salario) ||
                 data.id_dificuldade == '' || data.id_dificuldade == undefined || data.id_dificuldade == null ||
                 data.id_categoria == '' || data.id_categoria == undefined || data.id_categoria == null ||
-                data.id_cliente == '' || data.id_cliente == undefined || data.id_cliente == null
+                data.id_cliente == '' || data.id_cliente == undefined || data.id_cliente == null  ||  isNaN(data.id_cliente)
             )
                 return message.ERROR_REQUIRED_FIELDS   
 
