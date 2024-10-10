@@ -15,9 +15,9 @@ const postBico = async function(data, contentType) {
             if (
                 data.titulo == '' || data.titulo == undefined || data.titulo == null || data.titulo.length > 100 ||
                 data.descricao == '' || data.descricao == undefined || data.descricao == null || data.descricao.length > 500 ||
-                data.horario_inicio == '' || data.horario_inicio == undefined || data.horario_inicio == null || data.horario_inicio.length != 8 ||
+                data.horario_inicio == '' || data.horario_inicio == undefined || data.horario_inicio == null || data.horario_inicio.length != 5 ||
                 data.data_inicio == '' || data.data_inicio == undefined || data.data_inicio == null || data.data_inicio.length != 10 ||
-                data.horario_limite == '' || data.horario_limite == undefined || data.horario_limite == null || data.horario_limite.length != 8 ||
+                data.horario_limite == '' || data.horario_limite == undefined || data.horario_limite == null || data.horario_limite.length != 5 ||
                 data.data_limite == '' || data.data_limite == undefined || data.data_limite == null || data.data_limite.length != 10 ||
                 data.salario == '' || data.salario == undefined || data.salario == null || isNaN(data.salario) ||
                 data.id_dificuldade == '' || data.id_dificuldade == undefined || data.id_dificuldade == null ||
