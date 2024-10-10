@@ -22,6 +22,7 @@ const bodyParserJSON = bodyParser.json()
 const controller_usuario = require('./controller/controller_usuario.js')
 const controller_cliente = require('./controller/controller_cliente.js')
 const controller_bico = require('./controller/controller_bico.js')
+const controller_cartao = require('./controller/controller_cartao.js')
 const controller_categoria = require('./controller/controller_categoria.js')
 const controller_dificuldade = require('./controller/controller_dificuldade.js')
 
@@ -165,6 +166,16 @@ app.get('/2.0/touccan/dificuldade', cors(), async function(request, response) {
     response.json(result)
 })
 
+
+/** Cartão */
+app.post('/2.0/touccan/cliente/cartao', cors(), bodyParserJSON, async function(request, response){
+    let contentType = request.headers['content-type']
+    let data = request.body
+    let result = await controller_cartao.postClientCard(data, contentType)
+
+    response.status(result.status_code)
+    response.json(result)
+})
 
 app.listen('8080', function(){
     console.log('API funcionando!!')
