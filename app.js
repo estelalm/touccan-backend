@@ -149,6 +149,19 @@ app.delete('/2.0/touccan/bico/:id', cors(), async function(request, response){
     response.status(result.status_code)
     response.json(result)
 })
+app.get('/2.0/touccan/candidato', cors(), async function(request,response) {
+    let result = await controller_bico.getAllCandidates()
+
+    response.status(result.status_code)
+    response.json(result)
+})
+app.get('/2.0/touccan/candidato/:id', cors(), async function(request,response) {
+    let id=request.params.id
+    let result = await controller_bico.getCandidatesByBicoID(id)
+
+    response.status(result.status_code)
+    response.json(result)
+})
 
 /** CATEGORIA */
 app.get('/2.0/touccan/categoria', cors(), async function(request, response) {
@@ -172,6 +185,15 @@ app.post('/2.0/touccan/cliente/cartao', cors(), bodyParserJSON, async function(r
     let contentType = request.headers['content-type']
     let data = request.body
     let result = await controller_cartao.postClientCard(data, contentType)
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+app.post('/2.0/touccan/usuario/cartao', cors(), bodyParserJSON, async function(request, response){
+    let contentType = request.headers['content-type']
+    let data = request.body
+    let result = await controller_cartao.postUserCard(data, contentType)
 
     response.status(result.status_code)
     response.json(result)
