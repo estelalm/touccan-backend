@@ -40,6 +40,44 @@ const insertClientCard = async function(data) {
     }
 }
 
+const insertUserCard = async function(data) {
+    try {
+        let sql
+        if(data.apelido!=''&&data.apelido!=null&&data.apelido!=undefined){
+            sql=`INSERT INTO tbl_cartao_usuario(numero, validade, cvv, nome_titular, cpf, apelido, id_usuario)
+            VALUES(
+                '${data.numero}',
+                '${data.validade}',
+                '${data.cvv}',
+                '${data.nome_titular}',
+                '${data.cpf}',
+                '${data.apelido}',
+                '${data.id_usuario}'
+            )`
+            let rs=await prisma.$executeRawUnsafe(sql)
+            return rs
+        }
+        else{
+            sql=`INSERT INTO tbl_cartao_usuario(numero, validade, cvv, nome_titular, cpf, id_cliente, apelido)
+            VALUES(
+                '${data.numero}',
+                '${data.validade}',
+                '${data.cvv}',
+                '${data.nome_titular}',
+                '${data.cpf}',
+                '${data.id_usuario}',
+                null
+            )`
+            let rs=await prisma.$executeRawUnsafe(sql)
+            return rs
+        }
+    } catch (error) {
+        console.error(error);
+        return false
+    }
+}
+
 module.exports={
-    insertClientCard
+    insertClientCard,
+    insertUserCard
 }

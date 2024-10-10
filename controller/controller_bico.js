@@ -177,16 +177,23 @@ const getBicoByCEP = async function(cepUser) {
             const jsonUser = response.data
             const clientCEPArray = []
             const bicos = await getBico()
+            
             const clients = await controller_cliente.getClient()
+            
             const clientsAux = clients.cliente
             const clientsArray = clientsAux.map(cliente => ({
                 id: cliente.id,
                 cep: cliente.cep
             }))
             const bicosArray = bicos.bicos
+            
             for (const bico of bicosArray) {
-                let client = await controller_cliente.getClientId(bico.id_cliente)
-                clientCEPArray.push(client.cliente.cep)
+                if(bico.cliente.id){
+                    let client = await controller_cliente.getClientId(bico.cliente.id)
+                    clientCEPArray.push(client.cliente.cep)
+                }
+                else
+                    continue
             }
             const cepsAccepted = []
             const promises = clientCEPArray.map(async (cep) => {
@@ -356,19 +363,71 @@ const excluirBico = async(id) => {
       if(idU == '' || idU == undefined || isNaN(idU)){
           return message.ERROR_INVALID_ID 
       }else{
-             let rtn = await bicoDAO.deleteBico(idU)
+        let bico=await getBicoByID(idU)
+        if(bico.status==true){
+            let rtn = await bicoDAO.deleteBico(idU)
   
              if(rtn){
                  return message.SUCCESS_DELETED_ITEM
              }else{
                  return message.ERROR_INTERNAL_SERVER_DB 
              }
+        }
+        else
+            return message.ERROR_NOT_FOUND
      }
     } catch (error) {
      return message.ERROR_INTERNAL_SERVER 
     }
 }
 
+const getAllCandidates = async() => {
+    try {
+        let data=await bicoDAO.selectAllCandidates()
+        let json={}
+        if(data){
+            if(data.length>0){
+                json.candidatos=data
+                json.quantidade=data.length
+                json.status_code=200
+                return json
+            }
+            else
+                return message.ERROR_NOT_FOUND
+        }
+        else
+            return message.ERROR_INTERNAL_SERVER_DB
+    } catch (error) {
+        console.error(error)
+        return message.ERROR_INTERNAL_SERVER
+    }
+}
+
+const getCandidatesByBicoID = async(id) => {
+    try {
+        if(id=='' || id==null || id==undefined || isNaN(id))
+            return message.ERROR_INVALID_ID
+        else{
+            let data=await bicoDAO.selectCandidatesByBicoID(id)
+            let json={}
+            if(data){
+                if(data.length>0){
+                    json.candidatos=data
+                    json.quantidade=data.length
+                    json.status_code=200
+                    return json
+                }
+                else
+                    return message.ERROR_NOT_FOUND
+            }
+            else
+                return message.ERROR_INTERNAL_SERVER_DB
+        }
+    } catch (error) {
+        console.error(error)
+        return message.ERROR_INTERNAL_SERVER
+    }
+}
 
 module.exports={
     postBico,
@@ -378,5 +437,7 @@ module.exports={
     getBicoByCEP,
     getBicoByFilter,
     getBicoClientId,
-    excluirBico
+    excluirBico,
+    getAllCandidates,
+    getCandidatesByBicoID
 }
