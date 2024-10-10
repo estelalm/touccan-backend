@@ -23,6 +23,8 @@ const controller_usuario = require('./controller/controller_usuario.js')
 const controller_cliente = require('./controller/controller_cliente.js')
 const controller_bico = require('./controller/controller_bico.js')
 const controller_cartao = require('./controller/controller_cartao.js')
+const controller_categoria = require('./controller/controller_categoria.js')
+const controller_dificuldade = require('./controller/controller_dificuldade.js')
 
 /** Usuário */
 app.post('/2.0/touccan/usuario', cors(), bodyParserJSON, async function(request, response){
@@ -88,7 +90,7 @@ app.post('/2.0/touccan/login/cliente', cors(), bodyParserJSON, async function(re
 })
 
 /** Bico */
-app.post('/2.0/touccan/bico', cors(), bodyParserJSON, async function(request, response){
+app.post('/2.0/touccan/bicos', cors(), bodyParserJSON, async function(request, response){
     let contentType = request.headers['content-type']
     let data = request.body
     let result = await controller_bico.postBico(data, contentType)
@@ -96,22 +98,19 @@ app.post('/2.0/touccan/bico', cors(), bodyParserJSON, async function(request, re
     response.status(result.status_code)
     response.json(result)
 })
-
 app.get('/2.0/touccan/bico', cors(), async function(request,response) {
     let result = await controller_bico.getBico()
 
     response.status(result.status_code)
     response.json(result)
 })
-
-app.get('/2.0/touccan/bico/id/:id', cors(), async function(request, response){
+app.get('/2.0/touccan/bico/:id', cors(), async function(request, response){
     let id = request.params.id
     let result = await controller_bico.getBicoByID(id)
     
     response.status(result.status_code)
     response.json(result)
 })
-
 app.get('/2.0/touccan/bico/cep/:cep', cors(), async function(request,response) {
     let cep=request.params.cep
     let result = await controller_bico.getBicoByCEP(cep)
@@ -119,7 +118,6 @@ app.get('/2.0/touccan/bico/cep/:cep', cors(), async function(request,response) {
     response.status(result.status_code)
     response.json(result)
 })
-
 app.post('/2.0/touccan/candidato', cors(), bodyParserJSON, async function(request, response){
     let contentType = request.headers['content-type']
     let data = request.body
@@ -128,7 +126,6 @@ app.post('/2.0/touccan/candidato', cors(), bodyParserJSON, async function(reques
     response.status(result.status_code)
     response.json(result)
 })
-
 app.get('/2.0/touccan/bico/filtro', cors(), bodyParserJSON, async function(request, response){    
     let contentType = request.headers['content-type']
     let data = request.body
@@ -138,6 +135,37 @@ app.get('/2.0/touccan/bico/filtro', cors(), bodyParserJSON, async function(reque
     response.status(result.status_code)
     response.json(result)
 })
+app.post('/2.0/touccan/bico', cors(), bodyParserJSON, async function(request, response){
+    let contentType = request.headers['content-type']
+    let data = request.body
+    let result = await controller_bico.getBicoClientId(data.id_cliente, contentType)
+    
+    response.status(result.status_code)
+    response.json(result)
+})
+app.delete('/2.0/touccan/bico/:id', cors(), async function(request, response){
+    let idBico = request.params.id
+    let result = await controller_bico.excluirBico(idBico)
+    response.status(result.status_code)
+    response.json(result)
+})
+
+/** CATEGORIA */
+app.get('/2.0/touccan/categoria', cors(), async function(request, response) {
+    let result = await controller_categoria.getCategory()
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+/** DIFICULDADE */
+app.get('/2.0/touccan/dificuldade', cors(), async function(request, response) {
+    let result = await controller_dificuldade.getDifficulty()
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
 
 /** Cartão */
 app.post('/2.0/touccan/cliente/cartao', cors(), bodyParserJSON, async function(request, response){
