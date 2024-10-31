@@ -99,9 +99,9 @@ const deleteBico = async (id) => {
 
 const selectAllCandidates = async() => {
     try {
-        let sql = `SELECT b.titulo AS "bico", u.nome AS "candidato", c.escolhido, b.id AS "id_bico", u.id AS "id_candidato" FROM tbl_usuario_bico AS c
-                 JOIN tbl_bico AS b ON c.id_bico=b.id
-                 JOIN tbl_usuario AS u ON c.id_usuario=u.id;`
+        let sql = `SELECT b.titulo AS "bico", u.nome AS "candidato", u.foto, c.escolhido, b.id AS "id_bico", u.id AS "id_candidato" FROM tbl_usuario_bico AS c
+                   JOIN tbl_bico AS b ON c.id_bico=b.id
+                   JOIN tbl_usuario AS u ON c.id_usuario=u.id;`
         let rs = await prisma.$queryRawUnsafe(sql)
         return rs
     } catch (error) {

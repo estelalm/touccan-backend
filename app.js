@@ -35,6 +35,15 @@ app.post('/2.0/touccan/usuario', cors(), bodyParserJSON, async function(request,
     response.status(result.status_code)
     response.json(result)
 })
+app.put('/2.0/touccan/usuario/:id', cors(), bodyParserJSON, async function(request, response){
+    let id=request.params.id
+    let contentType=request.headers['content-type']
+    let data=request.body
+    let result=await controller_usuario.putUser(data, contentType, id)
+    
+    response.status(result.status_code)
+    response.json(result)
+})
 app.get('/2.0/touccan/usuario', cors(), async function(request, response){
     let result = await controller_usuario.getUser()
 
@@ -63,6 +72,15 @@ app.post('/2.0/touccan/cliente', cors(), bodyParserJSON, async function(request,
     let contentType = request.headers['content-type']
     let data = request.body
     let result = await controller_cliente.postClient(data, contentType)
+    
+    response.status(result.status_code)
+    response.json(result)
+})
+app.put('/2.0/touccan/cliente/:id', cors(), bodyParserJSON, async function(request, response){
+    let id=request.params.id
+    let contentType=request.headers['content-type']
+    let data=request.body
+    let result=await controller_cliente.putClient(data, contentType, id)
     
     response.status(result.status_code)
     response.json(result)
