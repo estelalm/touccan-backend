@@ -101,6 +101,7 @@ const getClientId = async function(id){
         return message.ERROR_INTERNAL_SERVER
     }
 }
+console.log('gato')
 
 const callClientLogin = async function(data, contentType){
     try {
@@ -118,6 +119,8 @@ const callClientLogin = async function(data, contentType){
                 let emailU = data.email
                 let password = data.senha
                 let rtnClient = await clienteDAO.callLogin(emailU, password)
+                console.log(rtnClient);
+                
                 if (rtnClient) 
                     {
                     if (rtnClient.length > 0) 
