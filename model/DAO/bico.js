@@ -43,6 +43,36 @@ const insertCandidate = async function(data){
     }
 }
 
+const confirmCandidate = async function(data) {
+    try {
+        let sql=`
+            UPDATE tbl_usuario_bico
+
+            SET
+                escolhido=1
+
+            WHERE id_usuario=${data.id_user}
+            AND id_bico=${data.id_bico};
+        `
+        let rs = await prisma.$executeRawUnsafe(sql)
+        return rs
+    } catch (error) {
+        console.error(error);
+        return false
+    }
+}
+
+const deleteCandidate = async function(data) {
+    try {
+        let sql=`DELETE FROM tbl_usuario_bico WHERE id_usuario=${data.id_user} AND id_bico=${data.id_bico}`
+        let rs = await prisma.$executeRawUnsafe(sql)
+        return rs
+    } catch (error) {
+        console.error(error);
+        return false
+    }
+}
+
 const selectAllBicos = async function() {
     try {
         let sql=`SELECT * FROM tbl_bico ORDER BY id DESC`
@@ -137,6 +167,8 @@ const lastID = async function(){
 module.exports={
     insertBico,
     insertCandidate,
+    confirmCandidate,
+    deleteCandidate,
     selectBicoByID,
     selectAllBicos,
     selectBicoByFilter,

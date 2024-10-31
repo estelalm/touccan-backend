@@ -90,6 +90,90 @@ const postCandidate = async function(data, contentType){
     }
 }
 
+const putCandidate = async function(data, contentType) {
+    try {
+        if(String(contentType).toLowerCase()=='application/json'){
+            if (
+                data.id_user == '' || data.id_user == undefined || data.id_user == null || isNaN(data.id_user) ||
+                data.id_bico == '' || data.id_bico == undefined || data.id_bico == null || isNaN(data.id_bico)
+            )
+                return message.ERROR_INVALID_ID
+                else{
+                    const user=await controller_user.getUserId(data.id_user)
+                    const bico=await getBicoByID(data.id_bico)
+                    if(user&&bico){
+                        if(user.status==true&&bico.status==true){
+                            let json={}
+                            let rtnDAO = await bicoDAO.confirmCandidate(data)
+                            if(rtnDAO){
+                                json.user=user
+                                json.bico=bico
+                                json.status=message.SUCCESS_UPDATED_ITEM.status
+                                json.status_code=message.SUCCESS_UPDATED_ITEM.status_code
+                                json.message=message.SUCCESS_UPDATED_ITEM.message
+                                return json
+                            }
+                            else
+                                return message.ERROR_INTERNAL_SERVER_DB
+                        }
+                        else
+                            return message.ERROR_NOT_FOUND
+                    }
+                    else
+                        return message.ERROR_INTERNAL_SERVER_DB
+                }
+        }
+        else
+            return message.ERROR_CONTENT_TYPE
+    } catch (error) {
+        console.error(error);
+        return message.ERROR_INTERNAL_SERVER
+    }
+}
+
+const deleteCandidate = async function(data, contentType) {
+    try {
+        if(String(contentType).toLowerCase()=='application/json'){            
+            if (
+                data.id_user == '' || data.id_user == undefined || data.id_user == null || isNaN(data.id_user) ||
+                data.id_bico == '' || data.id_bico == undefined || data.id_bico == null || isNaN(data.id_bico)
+            )
+                return message.ERROR_INVALID_ID
+            else{
+                const user=await controller_user.getUserId(data.id_user)
+                const bico=await getBicoByID(data.id_bico)
+                    if(user&&bico){
+                        if(user.status==true&&bico.status==true){
+                            let json={}
+                            let rtnDAO = await bicoDAO.deleteCandidate(data)
+                            if(rtnDAO){
+                                json={
+                                    user,
+                                    bico
+                                }
+                                json.status=message.SUCCESS_DELETED_ITEM.status
+                                json.status_code=message.SUCCESS_DELETED_ITEM.status_code
+                                json.message=message.SUCCESS_DELETED_ITEM.message
+                                return json
+                            }
+                            else
+                                return message.ERROR_INTERNAL_SERVER_DB
+                        }
+                        else
+                            return message.ERROR_NOT_FOUND
+                    }
+                    else
+                        return message.ERROR_INTERNAL_SERVER_DB
+            }
+        }
+        else
+            return message.ERROR_CONTENT_TYPE
+    } catch (error) {
+        console.error(error);
+        return message.ERROR_INTERNAL_SERVER
+    }
+}
+
 const getBico = async function() {
     try {
         let data=await bicoDAO.selectAllBicos()
@@ -434,6 +518,8 @@ module.exports={
     getBico,
     getBicoByID,
     postCandidate,
+    putCandidate,
+    deleteCandidate,
     getBicoByCEP,
     getBicoByFilter,
     getBicoClientId,

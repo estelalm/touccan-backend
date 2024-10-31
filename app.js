@@ -144,6 +144,22 @@ app.post('/2.0/touccan/candidato', cors(), bodyParserJSON, async function(reques
     response.status(result.status_code)
     response.json(result)
 })
+app.put('/2.0/touccan/candidato', cors(), bodyParserJSON, async function(request, response){
+    let contentType=request.headers['content-type']
+    let data=request.body
+    let result=await controller_bico.putCandidate(data, contentType)
+    
+    response.status(result.status_code)
+    response.json(result)
+})
+app.delete('/2.0/touccan/candidato', cors(), bodyParserJSON, async function(request, response){
+    let contentType=request.headers['content-type']
+    let data=request.body
+    let result=await controller_bico.deleteCandidate(data, contentType)
+    
+    response.status(result.status_code)
+    response.json(result)
+})
 app.get('/2.0/touccan/bico/filtro', cors(), bodyParserJSON, async function(request, response){    
     let contentType = request.headers['content-type']
     let data = request.body
