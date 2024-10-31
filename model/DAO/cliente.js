@@ -27,6 +27,33 @@ const insertClient = async function(data){
     }
 }
 
+const updateClient = async function(data, id) {
+    try {
+        let sql=`
+            UPDATE tbl_cliente 
+
+            SET
+                nome_responsavel='${data.nome_responsavel}',
+                cpf_responsavel='${data.cpf_responsavel}',
+                email='${data.email}',
+                nome_fantasia='${data.nome_fantasia}',
+                razao_social='${data.razao_social}',
+                telefone=${data.telefone},
+                cnpj=${data.cnpj},
+                cep=${data.cep},
+                senha='${data.senha}',
+                foto='${data.foto}'
+
+            WHERE id='${id}';
+        `
+        let rs = await prisma.$executeRawUnsafe(sql)
+        return rs
+    } catch (error) {
+        console.log(error);
+        return false
+    }
+}
+
 const selectClient = async function(){
     try {
         let sql = 'select * from tbl_cliente'
@@ -83,6 +110,7 @@ const lastID = async function(){
 }
 module.exports ={
     insertClient,
+    updateClient,
     selectClient,
     selectClienteId,
     selectClientForReturnBico,

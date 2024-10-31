@@ -25,6 +25,35 @@ const insertUser = async function(data){
     }
 }
 
+const updateUser = async function(data, id) {
+    try {
+        let sql=`
+            UPDATE tbl_usuario
+
+            SET
+                nome='${data.nome_responsavel}',
+                cpf='${data.cpf_responsavel}',
+                telefone=${data.telefone},
+                cep=${data.cep},
+                email='${data.email}',
+                data_nascimento='${data.data_nascimento}',
+                senha='${data.senha}',
+                foto='${data.foto}',
+                biografia='${data.biografia}',
+                habilidade='${data.habilidade}',
+                id_formacao=${data.id_formacao},
+                id_disponibilidade=${data.id_disponibilidade}
+
+            WHERE id='${id}';
+        `
+        let rs = await prisma.$executeRawUnsafe(sql)
+        return rs
+    } catch (error) {
+        console.log(error);
+        return false
+    }
+}
+
 const selectUser = async function(){
     try {
         let sql = 'select * from tbl_usuario'
@@ -72,6 +101,7 @@ const lastID = async function(){
 
 module.exports = {
     insertUser,
+    updateUser,
     selectUser,
     selectUserId,
     callLogin,

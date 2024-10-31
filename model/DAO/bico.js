@@ -43,6 +43,36 @@ const insertCandidate = async function(data){
     }
 }
 
+const confirmCandidate = async function(data) {
+    try {
+        let sql=`
+            UPDATE tbl_usuario_bico
+
+            SET
+                escolhido=1
+
+            WHERE id_usuario=${data.id_user}
+            AND id_bico=${data.id_bico};
+        `
+        let rs = await prisma.$executeRawUnsafe(sql)
+        return rs
+    } catch (error) {
+        console.error(error);
+        return false
+    }
+}
+
+const deleteCandidate = async function(data) {
+    try {
+        let sql=`DELETE FROM tbl_usuario_bico WHERE id_usuario=${data.id_user} AND id_bico=${data.id_bico}`
+        let rs = await prisma.$executeRawUnsafe(sql)
+        return rs
+    } catch (error) {
+        console.error(error);
+        return false
+    }
+}
+
 const selectAllBicos = async function() {
     try {
         let sql=`SELECT * FROM tbl_bico ORDER BY id DESC`
@@ -99,9 +129,9 @@ const deleteBico = async (id) => {
 
 const selectAllCandidates = async() => {
     try {
-        let sql = `SELECT b.titulo AS "bico", u.nome AS "candidato", c.escolhido, b.id AS "id_bico", u.id AS "id_candidato" FROM tbl_usuario_bico AS c
-                 JOIN tbl_bico AS b ON c.id_bico=b.id
-                 JOIN tbl_usuario AS u ON c.id_usuario=u.id;`
+        let sql = `SELECT b.titulo AS "bico", u.nome AS "candidato", u.foto, c.escolhido, b.id AS "id_bico", u.id AS "id_candidato" FROM tbl_usuario_bico AS c
+                   JOIN tbl_bico AS b ON c.id_bico=b.id
+                   JOIN tbl_usuario AS u ON c.id_usuario=u.id;`
         let rs = await prisma.$queryRawUnsafe(sql)
         return rs
     } catch (error) {
@@ -137,6 +167,8 @@ const lastID = async function(){
 module.exports={
     insertBico,
     insertCandidate,
+    confirmCandidate,
+    deleteCandidate,
     selectBicoByID,
     selectAllBicos,
     selectBicoByFilter,
