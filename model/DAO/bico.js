@@ -117,6 +117,21 @@ const selectBicoByFilter = async function(script){
     }
 }
 
+const selectBicoByCandidate = async function(id){
+    try {
+        let sql=`SELECT b.titulo AS "bico", b.data_inicio, c.nome_fantasia AS "nome_cliente" FROM tbl_usuario_bico AS i
+                 JOIN tbl_usuario AS u ON u.id = i.id_usuario
+                 JOIN tbl_bico AS b ON b.id = i.id_bico
+                 JOIN tbl_cliente AS c on c.id=b.id_cliente
+                 WHERE u.id=${id};`
+        let rs = await prisma.$queryRawUnsafe(sql)
+        return rs
+    } catch (error) {
+        console.error(error);
+        return false
+    }
+}
+
 const deleteBico = async (id) => {
     try {
         let sql = `delete from tbl_bico where id = ${id}`
@@ -175,6 +190,7 @@ module.exports={
     lastID,
     deleteBico,
     selectBicoClientId,
+    selectBicoByCandidate,
     selectAllCandidates,
     selectCandidatesByBicoID
 }

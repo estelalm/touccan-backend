@@ -129,6 +129,13 @@ app.get('/2.0/touccan/bico/:id', cors(), async function(request, response){
     response.status(result.status_code)
     response.json(result)
 })
+app.get('/2.0/touccan/bico/candidato/:id', cors(), async function(request, response){
+    let id = request.params.id
+    let result = await controller_bico.getBicoByCandidate(id)
+    
+    response.status(result.status_code)
+    response.json(result)
+})
 app.get('/2.0/touccan/bico/cep/:cep', cors(), async function(request,response) {
     let cep=request.params.cep
     let result = await controller_bico.getBicoByCEP(cep)
@@ -224,10 +231,30 @@ app.post('/2.0/touccan/cliente/cartao', cors(), bodyParserJSON, async function(r
     response.json(result)
 })
 
+app.put('/2.0/touccan/cliente/cartao/:id', cors(), bodyParserJSON, async function(request, response){
+    let id=request.params.id
+    let contentType = request.headers['content-type']
+    let data = request.body
+    let result = await controller_cartao.putClientCard(data, id, contentType)
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
 app.post('/2.0/touccan/usuario/cartao', cors(), bodyParserJSON, async function(request, response){
     let contentType = request.headers['content-type']
     let data = request.body
     let result = await controller_cartao.postUserCard(data, contentType)
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+app.put('/2.0/touccan/usuario/cartao/:id', cors(), bodyParserJSON, async function(request, response){
+    let id=request.params.id
+    let contentType = request.headers['content-type']
+    let data = request.body
+    let result = await controller_cartao.putUserCard(data, id, contentType)
 
     response.status(result.status_code)
     response.json(result)

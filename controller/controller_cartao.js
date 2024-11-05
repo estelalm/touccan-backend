@@ -103,7 +103,81 @@ const postUserCard = async function(data, contentType) {
     }
 }
 
+const putClientCard=async function(data, id, contentType){
+    try {
+        if(String(contentType).toLocaleLowerCase() == 'application/json'){
+            if (
+                data.numero == '' || data.numero == undefined || data.numero == null || data.numero.length > 16 ||
+                data.validade == '' || data.validade == undefined || data.validade == null || data.validade.length > 5 ||
+                data.cvv == '' || data.cvv == undefined || data.cvv == null || data.cvv.length > 3 ||
+                data.nome_titular == '' || data.nome_titular == undefined || data.nome_titular == null || data.nome_titular.length > 40 ||
+                data.cpf == '' || data.cpf == undefined || data.cpf == null || data.cpf.length > 11 ||
+                data.apelido == '' || data.apelido == undefined || data.apelido == null || data.apelido.length > 45
+            ) 
+                return message.ERROR_REQUIRED_FIELDS 
+            else if(id==''||id==undefined||id==null||isNaN(id))
+                return message.ERROR_INVALID_ID     
+            else{
+                let json={}
+                let rtnDAO=await cartaoDAO.updateClientCard(data, id)
+                if(rtnDAO){
+                    json.cartao=data
+                    json.status=message.SUCCESS_UPDATED_ITEM.status
+                    json.status_code=message.SUCCESS_UPDATED_ITEM.status_code
+                    json.message=message.SUCCESS_UPDATED_ITEM.message
+                    return json
+                }
+                else
+                    return message.ERROR_INTERNAL_SERVER_DB
+            }      
+        }
+        else
+            return message.ERROR_CONTENT_TYPE
+    } catch (error) {
+        console.error(error);
+        return message.ERROR_INTERNAL_SERVER
+    }
+}
+
+const putUserCard=async function(data, id, contentType){
+    try {
+        if(String(contentType).toLocaleLowerCase() == 'application/json'){
+            if (
+                data.numero == '' || data.numero == undefined || data.numero == null || data.numero.length > 16 ||
+                data.validade == '' || data.validade == undefined || data.validade == null || data.validade.length > 5 ||
+                data.cvv == '' || data.cvv == undefined || data.cvv == null || data.cvv.length > 3 ||
+                data.nome_titular == '' || data.nome_titular == undefined || data.nome_titular == null || data.nome_titular.length > 40 ||
+                data.cpf == '' || data.cpf == undefined || data.cpf == null || data.cpf.length > 11 ||
+                data.apelido == '' || data.apelido == undefined || data.apelido == null || data.apelido.length > 45
+            ) 
+                return message.ERROR_REQUIRED_FIELDS 
+            else if(id==''||id==undefined||id==null||isNaN(id))
+                return message.ERROR_INVALID_ID     
+            else{
+                let json={}
+                let rtnDAO=await cartaoDAO.updateUserCard(data, id)
+                if(rtnDAO){
+                    json.cartao=data
+                    json.status=message.SUCCESS_UPDATED_ITEM.status
+                    json.status_code=message.SUCCESS_UPDATED_ITEM.status_code
+                    json.message=message.SUCCESS_UPDATED_ITEM.message
+                    return json
+                }
+                else
+                    return message.ERROR_INTERNAL_SERVER_DB
+            }      
+        }
+        else
+            return message.ERROR_CONTENT_TYPE
+    } catch (error) {
+        console.error(error);
+        return message.ERROR_INTERNAL_SERVER
+    }
+}
+
 module.exports={
     postClientCard,
-    postUserCard
+    postUserCard,
+    putClientCard,
+    putUserCard
 }
