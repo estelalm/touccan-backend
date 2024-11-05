@@ -43,7 +43,22 @@ const insertClientCard = async function(data) {
 const updateClientCard = async function(data, id) {
     try {
         let sql
-        if(data.apelido!=''&&data.apelido!=null&&data.apelido!=undefined){
+        if(data.apelido==''||data.apelido==null||data.apelido==undefined){
+            sql=`
+            UPDATE tbl_cartao_cliente
+
+            SET
+                numero='${data.numero}',
+                validade='${data.validade}',
+                cvv='${data.cvv}',
+                nome_titular='${data.nome_titular}',
+                cpf='${data.cpf}',
+                apelido=null
+
+            WHERE id_cliente='${id}';
+        `
+        }
+        else{
             sql=`
             UPDATE tbl_cartao_cliente
 
@@ -103,8 +118,50 @@ const insertUserCard = async function(data) {
     }
 }
 
+const updateUserCard = async function(data, id) {
+    try {
+        let sql
+        if(data.apelido==''||data.apelido==null||data.apelido==undefined){
+            sql=`
+            UPDATE tbl_cartao_usuario
+
+            SET
+                numero='${data.numero}',
+                validade='${data.validade}',
+                cvv='${data.cvv}',
+                nome_titular='${data.nome_titular}',
+                cpf='${data.cpf}',
+                apelido=null
+
+            WHERE id_usuario='${id}';
+        `
+        }
+        else{
+            sql=`
+            UPDATE tbl_cartao_usuario
+
+            SET
+                numero='${data.numero}',
+                validade='${data.validade}',
+                cvv='${data.cvv}',
+                nome_titular='${data.nome_titular}',
+                cpf='${data.cpf}',
+                apelido='${data.apelido}'
+
+            WHERE id_usuario='${id}';
+        `
+        }
+        let rs = await prisma.$executeRawUnsafe(sql)
+        return rs
+    } catch (error) {
+        console.log(error);
+        return false
+    }
+}
+
 module.exports={
     insertClientCard,
     insertUserCard,
-    updateClientCard
+    updateClientCard,
+    updateUserCard
 }
