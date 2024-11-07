@@ -271,6 +271,16 @@ app.post('/2.0/touccan/avaliacao/usuario', cors(), bodyParserJSON, async functio
     response.json(result)
 })
 
+/** Avaliação Cliente*/
+app.post('/2.0/touccan/avaliacao/cliente', cors(), bodyParserJSON, async function (request, response) {
+    let contentType = request.headers['content-type']
+    let data = request.body
+    let result = await controller_avalicao.postRatingClient(data, contentType)
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
 app.listen('8080', function(){
     console.log('API funcionando!!')
 })
