@@ -5,6 +5,10 @@ const ERROR_NOT_FOUND = {status: false, status_code: 404, message: 'Não foi enc
 
 const ERROR_USER_NOT_FOUND = {status: false, status_code: 404, message: 'O usuário não foi encontrado ou não existe.'}
 
+const ERROR_CLIENT_NOT_FOUND = {status: false, status_code: 404, message: 'O cliente não foi encontrado ou não existe.'}
+
+const ERROR_BICO_NOT_FOUND = {status: false, status_code: 404, message: 'O bico não foi encontrado ou não existe.'}
+
 const ERROR_INTERNAL_SERVER_DB = {status: false, status_code: 500, message: 'Não foi possivel processar a requisição, devido ao um erro no acesso ao banco de dados. Contate o administrador da API'}
 
 const ERROR_REQUIRED_FIELDS = {status: false, status_code: 400, message: 'Existem campos requeridos e não foram preenchidos, ou não atendem aos critérios de digitação'}
@@ -47,5 +51,7 @@ module.exports = {
     SUCCESS_FOUND_USER,
     SUCCESS_UPDATED_USER, 
     SUCCESS_CREATED_USER,
-    SUCCESS_DELETED_USER
+    SUCCESS_DELETED_USER,
+    ERROR_BICO_NOT_FOUND,
+    ERROR_CLIENT_NOT_FOUND
 }

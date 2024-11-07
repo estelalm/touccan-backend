@@ -25,6 +25,7 @@ const controller_bico = require('./controller/controller_bico.js')
 const controller_cartao = require('./controller/controller_cartao.js')
 const controller_categoria = require('./controller/controller_categoria.js')
 const controller_dificuldade = require('./controller/controller_dificuldade.js')
+const controller_avalicao = require('./controller/controller_avaliacao.js')
 
 /** Usuário */
 app.post('/2.0/touccan/usuario', cors(), bodyParserJSON, async function(request, response){
@@ -255,6 +256,16 @@ app.put('/2.0/touccan/usuario/cartao/:id', cors(), bodyParserJSON, async functio
     let contentType = request.headers['content-type']
     let data = request.body
     let result = await controller_cartao.putUserCard(data, id, contentType)
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+/** Avaliação Usuário*/
+app.post('/2.0/touccan/avaliacao/usuario', cors(), bodyParserJSON, async function (request, response) {
+    let contentType = request.headers['content-type']
+    let data = request.body
+    let result = await controller_avalicao.postRatingUser(data, contentType)
 
     response.status(result.status_code)
     response.json(result)
