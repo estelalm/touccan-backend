@@ -25,6 +25,8 @@ const controller_bico = require('./controller/controller_bico.js')
 const controller_cartao = require('./controller/controller_cartao.js')
 const controller_categoria = require('./controller/controller_categoria.js')
 const controller_dificuldade = require('./controller/controller_dificuldade.js')
+const controller_avaliacao = require('./controller/controller_avaliacao.js')
+const controller_denuncia = require('./controller/controller_denuncia.js')
 
 /** Usuário */
 app.post('/2.0/touccan/usuario', cors(), bodyParserJSON, async function(request, response){
@@ -263,6 +265,44 @@ app.put('/2.0/touccan/usuario/cartao/:id', cors(), bodyParserJSON, async functio
     let data = request.body
     let result = await controller_cartao.putUserCard(data, id, contentType)
 
+    response.status(result.status_code)
+    response.json(result)
+})
+
+/** Avaliação Usuário*/
+app.post('/2.0/touccan/avaliacao/usuario', cors(), bodyParserJSON, async function (request, response) {
+    let contentType = request.headers['content-type']
+    let data = request.body
+    let result = await controller_avaliacao.postRatingUser(data, contentType)
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+/** Avaliação Cliente*/
+app.post('/2.0/touccan/avaliacao/cliente', cors(), bodyParserJSON, async function (request, response) {
+    let contentType = request.headers['content-type']
+    let data = request.body
+    let result = await controller_avaliacao.postRatingClient(data, contentType)
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+/** Denúncia Usuário*/
+app.post('/2.0/touccan/denuncia/usuario', cors(), bodyParserJSON, async function (request, response) {
+    let contentType = request.headers['content-type']
+    let data = request.body
+    let result = await controller_denuncia.postReportUser(data, contentType)
+    response.status(result.status_code)
+    response.json(result)
+})
+
+/** Denúncia Cliente*/
+app.post('/2.0/touccan/denuncia/cliente', cors(), bodyParserJSON, async function (request, response) {
+    let contentType = request.headers['content-type']
+    let data = request.body
+    let result = await controller_denuncia.postReportClient(data, contentType)
     response.status(result.status_code)
     response.json(result)
 })
