@@ -27,6 +27,7 @@ const controller_categoria = require('./controller/controller_categoria.js')
 const controller_dificuldade = require('./controller/controller_dificuldade.js')
 const controller_avaliacao = require('./controller/controller_avaliacao.js')
 const controller_denuncia = require('./controller/controller_denuncia.js')
+const controller_feedback = require('./controller/controller_feedback.js')
 
 /** Usuário */
 app.post('/2.0/touccan/usuario', cors(), bodyParserJSON, async function(request, response){
@@ -300,6 +301,23 @@ app.post('/2.0/touccan/denuncia/cliente', cors(), bodyParserJSON, async function
     response.json(result)
 })
 
+/** FeedBack Usuário */
+app.get('/2.0/touccan/feedback/usuario/:id', cors(), async function (request, response) {
+    let id = request.params.id
+    let result = await controller_feedback.feedbackUser(id)
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+/** FeedBack Cliente */
+app.get('/2.0/touccan/feedback/cliente/:id', cors(), async function (request, response) {
+    let id = request.params.id
+    let result = await controller_feedback.feedbackClient(id)
+
+    response.status(result.status_code)
+    response.json(result)
+})
 app.listen('8080', function(){
     console.log('API funcionando!!')
 })

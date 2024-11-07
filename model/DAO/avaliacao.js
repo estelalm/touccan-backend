@@ -17,8 +17,8 @@ const insertRatingUser = async function(data) {
         let rs = await prisma.$executeRawUnsafe(sql)
         return rs
     } catch (error) {
-        console.log(error);
-        return false
+        console.error(error);
+        return error
     }
 }
 
@@ -35,7 +35,26 @@ const insertRatingClient = async function(data) {
         let rs = await prisma.$executeRawUnsafe(sql)
         return rs
     } catch (error) {
-        console.log(error);
+        console.error(error);
+        return error
+    }
+}
+
+const selectFeedbackUserRating = async function(id_usuario) {
+    try {
+        let sql = `select * from tbl_avaliacao_cliente where id_usuario = ${id_usuario}`
+        let rs = await prisma.$queryRawUnsafe(sql)
+        return rs
+    } catch (error) {
+        return false
+    }
+}
+const selectFeedbackClientRating = async function(id_cliente) {
+    try {
+        let sql = `select * from tbl_avaliacao_usuario where id_cliente = ${id_cliente}`
+        let rs = await prisma.$queryRawUnsafe(sql)
+        return rs
+    } catch (error) {
         return false
     }
 }
@@ -85,5 +104,7 @@ module.exports={
     lastIDRatingUser,
     insertRatingClient,
     selectRatingClientByID,
-    lastIDRatingClient
+    lastIDRatingClient,
+    selectFeedbackUserRating,
+    selectFeedbackClientRating
 }
