@@ -66,7 +66,7 @@ const putClient = async function(data, contentType, id) {
                 return message.ERROR_REQUIRED_FIELDS
             else{
                 let client = await clienteDAO.selectClienteId(id)
-                if(client){
+                if(client.length>0){
                     let json = {}
                     let rtnDAO = await clienteDAO.updateClient(data, id)
                     if(rtnDAO){
@@ -88,6 +88,28 @@ const putClient = async function(data, contentType, id) {
             return message.ERROR_CONTENT_TYPE
     } catch (error) {
         console.log(error);
+        return message.ERROR_INTERNAL_SERVER
+    }
+}
+
+const deleteClient = async function(id){
+    try {
+        if(id==''||id==undefined||id==null||isNaN(id))
+                return message.ERROR_INVALID_ID
+        else{
+            let client = await clienteDAO.selectClienteId(id)
+            if(client.length>0){
+                let rsDAO = await clienteDAO.deleteClient(id)
+                if(rsDAO)
+                    return message.SUCCESS_DELETED_ITEM
+                else
+                    return message.ERROR_INTERNAL_SERVER_DB
+            }
+            else
+                return message.ERROR_NOT_FOUND
+        }
+    } catch (error) {
+        console.error(error);
         return message.ERROR_INTERNAL_SERVER
     }
 }
@@ -201,6 +223,7 @@ const callClientLogin = async function(data, contentType){
 module.exports = {
     getClient,
     postClient,
+    deleteClient,
     putClient,
     getClientId,
     callClientLogin

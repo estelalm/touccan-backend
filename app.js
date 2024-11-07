@@ -85,6 +85,13 @@ app.put('/2.0/touccan/cliente/:id', cors(), bodyParserJSON, async function(reque
     response.status(result.status_code)
     response.json(result)
 })
+app.delete('/2.0/touccan/cliente/:id', cors(), async function(request, response){
+    let idClient = request.params.id
+    let result = await controller_cliente.deleteClient(idClient)
+    
+    response.status(result.status_code)
+    response.json(result)
+})
 app.get('/2.0/touccan/cliente', cors(), async function(request, response){
     let result = await controller_cliente.getClient()
 

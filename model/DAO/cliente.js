@@ -54,6 +54,45 @@ const updateClient = async function(data, id) {
     }
 }
 
+const deleteClient = async function(id){
+    try {
+        let sql
+        let rsI = await prisma.$transaction([
+            prisma.$executeRawUnsafe(`
+                DELETE FROM tbl_avaliacao_cliente WHERE id_cliente=${id}
+            `),
+            prisma.$executeRawUnsafe(`
+                DELETE FROM tbl_avaliacao_usuario WHERE id_cliente=${id}
+            `),
+            prisma.$executeRawUnsafe(`
+                DELETE FROM tbl_cartao_cliente WHERE id_cliente=${id}
+            `),
+            prisma.$executeRawUnsafe(`
+                DELETE FROM tbl_bico WHERE id_cliente=${id}
+            `),
+            prisma.$executeRawUnsafe(`
+                DELETE FROM tbl_cliente_bico WHERE id_cliente=${id}
+            `),
+            prisma.$executeRawUnsafe(`
+                DELETE FROM tbl_denuncia_cliente WHERE id_cliente=${id}
+            `),
+            prisma.$executeRawUnsafe(`
+                DELETE FROM tbl_denuncia_usuario WHERE id_cliente=${id}
+            `)
+        ])
+        if(rsI){
+            sql=`DELETE  FROM tbl_cliente WHERE id='${id}';`
+            let rs = await prisma.$executeRawUnsafe(sql)    
+            return rs
+        }
+        else
+            return false
+    } catch (error) {
+        console.error(error);
+        return false
+    }
+}
+
 const selectClient = async function(){
     try {
         let sql = 'select * from tbl_cliente'
@@ -108,10 +147,12 @@ const lastID = async function(){
     }
     
 }
+
 module.exports ={
     insertClient,
     updateClient,
     selectClient,
+    deleteClient,
     selectClienteId,
     selectClientForReturnBico,
     callLogin,
