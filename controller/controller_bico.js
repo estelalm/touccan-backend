@@ -474,6 +474,25 @@ const getBicoClientId = async function (id, contentType) {
     }
 }
 
+const getBicoClientPremium = async function () {
+    try {
+        let bicos = await bicoDAO.selectBicoClientPremium()
+        console.log(bicos);
+        
+        if (bicos) {
+            let json = {}
+            json.bico = bicos
+            json.status = message.SUCCESS_CREATED_ITEM.status
+            json.status_code = message.SUCCESS_CREATED_ITEM.status_code
+            return json
+        } else {
+            return message.ERROR_INTERNAL_SERVER_DB
+        }
+    } catch (error) {
+        return message.ERROR_INTERNAL_SERVER
+    }   
+}
+
 const excluirBico = async(id) => {
     try {
       let idU = id
@@ -559,5 +578,6 @@ module.exports={
     getBicoClientId,
     excluirBico,
     getAllCandidates,
-    getCandidatesByBicoID
+    getCandidatesByBicoID,
+    getBicoClientPremium
 }
