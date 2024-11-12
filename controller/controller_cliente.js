@@ -129,6 +129,48 @@ const putClient = async function(data, contentType, id) {
     }
 }
 
+const putClientInfos = async function(data, contentType, id) {
+    try {
+        if(String(contentType).toLocaleLowerCase() == 'application/json'){
+            if(id==''||id==undefined||id==null||isNaN(id))
+                return message.ERROR_INVALID_ID
+            else if (
+                data.nome_fantasia == '' || data.nome_fantasia == undefined || data.nome_fantasia == null || data.nome_fantasia.length > 100 ||
+                data.email == '' || data.email == undefined || data.email == null || data.email.length > 100 ||
+                data.telefone == '' || data.telefone == undefined || data.telefone == null || data.telefone.length > 11 ||
+                data.cep == '' || data.cep == undefined || data.cep == null || data.cep.length > 8 
+            )
+                return message.ERROR_REQUIRED_FIELDS
+            else{
+                let client = await clienteDAO.selectClienteId(id)
+                if(client){
+                    let json = {}
+                    let rtnDAO = await clienteDAO.updateClientInfos(id, data)
+                    console.log(rtnDAO)
+                    if(rtnDAO){
+                        let up = await clienteDAO.selectClienteId(id)
+                        json.cliente = up
+                        json.status=message.SUCCESS_UPDATED_ITEM.status
+                        json.status_code=message.SUCCESS_UPDATED_ITEM.status_code
+                        json.message=message.SUCCESS_UPDATED_ITEM.message
+                        return json
+                    }
+                    else{
+                        return message.ERROR_INTERNAL_SERVER_DB
+                    }
+                }
+                else    
+                    return message.ERROR_NOT_FOUND
+            }
+        }
+        else
+            return message.ERROR_CONTENT_TYPE
+    } catch (error) {
+        console.log(error);
+        return message.ERROR_INTERNAL_SERVER
+    }
+}
+
 const getClient = async function(){
     try {
         let dados = await clienteDAO.selectClient()
@@ -240,6 +282,7 @@ module.exports = {
     postClient,
     putClient,
     putClientPremium,
+    putClientInfos,
     getClientId,
     callClientLogin
 }

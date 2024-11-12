@@ -100,6 +100,21 @@ const selectClientForReturnBico = async function(id) {
     }
 }
 
+const updateClientInfos = async function(id, data){
+    try {
+        let sql = `UPDATE tbl_cliente SET
+        email='${data.email}',
+        nome_fantasia='${data.nome_fantasia}',
+        telefone=${data.telefone},
+        cep=${data.cep}
+        WHERE id = ${id}`
+        let rs = await prisma.$executeRawUnsafe(sql)
+        return rs
+    } catch (error) {
+        return false
+    }
+}
+
 const callLogin = async function(email, pw){
     try {
         let sql = `CALL sp_login_cliente('${email}', '${pw}');`        
@@ -128,6 +143,7 @@ module.exports ={
     selectClient,
     selectClienteId,
     selectClientForReturnBico,
+    updateClientInfos,
     callLogin,
     lastID
 }
