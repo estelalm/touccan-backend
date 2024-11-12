@@ -252,6 +252,15 @@ app.put('/2.0/touccan/cliente/cartao/:id', cors(), bodyParserJSON, async functio
     response.status(result.status_code)
     response.json(result)
 })
+app.put('/2.0/touccan/cliente/cartao/:id', cors(), async function(request, response){
+    let id=request.params.id
+    let contentType = request.headers['content-type']
+    let data = request.body
+    let result = await controller_cartao.putClientCard(data, id, contentType)
+
+    response.status(result.status_code)
+    response.json(result)
+})
 
 app.post('/2.0/touccan/usuario/cartao', cors(), bodyParserJSON, async function(request, response){
     let contentType = request.headers['content-type']
@@ -262,11 +271,16 @@ app.post('/2.0/touccan/usuario/cartao', cors(), bodyParserJSON, async function(r
     response.json(result)
 })
 
-app.put('/2.0/touccan/usuario/cartao/:id', cors(), bodyParserJSON, async function(request, response){
+app.get('/2.0/touccan/cliente/cartao/:id', cors(), bodyParserJSON, async function(request, response){
     let id=request.params.id
-    let contentType = request.headers['content-type']
-    let data = request.body
-    let result = await controller_cartao.putUserCard(data, id, contentType)
+    let result = await controller_cartao.getClientCard(id)
+
+    response.status(result.status_code)
+    response.json(result)
+})
+app.get('/2.0/touccan/usuario/cartao/:id', cors(), bodyParserJSON, async function(request, response){
+    let id=request.params.id
+    let result = await controller_cartao.getUserCard(id)
 
     response.status(result.status_code)
     response.json(result)

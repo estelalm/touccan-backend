@@ -81,6 +81,16 @@ const updateClientCard = async function(data, id) {
     }
 }
 
+const selectClientCard = async function(id) {
+    try {
+        let sql = `SELECT * from tbl_cartao_cliente WHERE id_cliente = ${id}`
+        let rs = await prisma.$queryRawUnsafe(sql)
+        return rs
+    } catch (error) {
+        return error
+    }
+}
+
 const insertUserCard = async function(data) {
     try {
         let sql
@@ -159,9 +169,21 @@ const updateUserCard = async function(data, id) {
     }
 }
 
+const selectUserCard = async function(id) {
+    try {
+        let sql = `SELECT * from tbl_cartao_usuario WHERE id_usuario = ${id}`
+        let rs = await prisma.$queryRawUnsafe(sql)
+        return rs
+    } catch (error) {
+        return error
+    }
+}
+
 module.exports={
     insertClientCard,
     insertUserCard,
+    selectClientCard,
     updateClientCard,
-    updateUserCard
+    updateUserCard,
+    selectUserCard
 }
