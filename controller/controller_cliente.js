@@ -46,6 +46,43 @@ const postClient = async function(data, contentType){
     }
 }
 
+const putClientPremium = async function(id, data, contentType){
+    try {
+        if (String(contentType).toLowerCase() == 'application/json') {
+            idC = id
+            if (idC == '' || idC == undefined || idC == null || isNaN(idC)) {
+                return message.ERROR_INVALID_ID
+            } else if (data.premium == null || data.premium == undefined || data.premium == '' || data.premium.length > 1) {
+                return message.ERROR_REQUIRED_FIELDS
+            } else {
+                let client = await clienteDAO.selectClienteId(idC)
+                if(client){
+                    let json = {}
+                    let rtnDAO = await clienteDAO.updateClientPremium(data.premium, idC)
+                    if(rtnDAO){
+                        let cliente = await clienteDAO.selectClienteId(idC)
+                        json.cliente=cliente
+                        json.status=message.SUCCESS_UPDATED_ITEM.status
+                        json.status_code=message.SUCCESS_UPDATED_ITEM.status_code
+                        json.message=message.SUCCESS_UPDATED_ITEM.message
+                        return json
+                    }
+                    else{
+                        return message.ERROR_INTERNAL_SERVER_DB
+                    }
+                }
+                else{
+                    return message.ERROR_NOT_FOUND
+                }
+            }
+        } else {
+            return message.ERROR_CONTENT_TYPE
+        }
+    } catch (error) {
+        return message.ERROR_INTERNAL_SERVER
+    }
+}
+
 const putClient = async function(data, contentType, id) {
     try {
         if(String(contentType).toLocaleLowerCase() == 'application/json'){
@@ -202,6 +239,7 @@ module.exports = {
     getClient,
     postClient,
     putClient,
+    putClientPremium,
     getClientId,
     callClientLogin
 }
