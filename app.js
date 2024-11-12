@@ -88,6 +88,15 @@ app.put('/2.0/touccan/cliente/:id', cors(), bodyParserJSON, async function(reque
     response.status(result.status_code)
     response.json(result)
 })
+app.put('/2.0/touccan/premium/cliente/:id', cors(), bodyParserJSON, async function(request, response){
+    let id=request.params.id
+    let contentType=request.headers['content-type']
+    let data=request.body
+    let result=await controller_cliente.putClientPremium(id, data, contentType)
+    
+    response.status(result.status_code)
+    response.json(result)
+})
 app.get('/2.0/touccan/cliente', cors(), async function(request, response){
     let result = await controller_cliente.getClient()
 

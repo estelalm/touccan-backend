@@ -27,6 +27,19 @@ const insertClient = async function(data){
     }
 }
 
+const updateClientPremium = async function(premium, id){
+    try {
+        let sql = `UPDATE tbl_cliente SET 
+                    premium = ${premium}
+                    WHERE id = ${id}`
+        
+        let rs = await prisma.$executeRawUnsafe(sql)
+        return rs
+    } catch (error) {
+        return false
+    }
+}
+
 const updateClient = async function(data, id) {
     try {
         let sql=`
@@ -110,6 +123,7 @@ const lastID = async function(){
 }
 module.exports ={
     insertClient,
+    updateClientPremium,
     updateClient,
     selectClient,
     selectClienteId,
