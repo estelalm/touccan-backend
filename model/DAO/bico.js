@@ -132,6 +132,8 @@ const selectBicoByCandidate = async function(id){
     }
 }
 
+// const selectBicoClientPremium = async 
+
 const deleteBico = async (id) => {
     try {
         let sql = `delete from tbl_bico where id = ${id}`

@@ -52,7 +52,7 @@ const putClientPremium = async function(id, data, contentType){
             idC = id
             if (idC == '' || idC == undefined || idC == null || isNaN(idC)) {
                 return message.ERROR_INVALID_ID
-            } else if (data.premium == null || data.premium == undefined || data.premium == '' || data.premium.length > 1) {
+            } else if (data.premium !== 0 && data.premium !== 1) {
                 return message.ERROR_REQUIRED_FIELDS
             } else {
                 let client = await clienteDAO.selectClienteId(idC)
