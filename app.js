@@ -97,6 +97,12 @@ app.put('/2.0/touccan/cliente/:id', cors(), bodyParserJSON, async function(reque
     response.status(result.status_code)
     response.json(result)
 })
+app.delete('/2.0/touccan/cliente/:id', cors(), async function(request, response){
+    let idClient = request.params.id
+    let result = await controller_cliente.deleteClient(idClient)
+    response.status(result.status_code)
+    response.json(result)
+})
 app.put('/2.0/touccan/premium/cliente/:id', cors(), bodyParserJSON, async function(request, response){
     let id=request.params.id
     let contentType=request.headers['content-type']
@@ -111,10 +117,8 @@ app.put('/2.0/touccan/infos/cliente/:id', cors(), bodyParserJSON, async function
     let contentType=request.headers['content-type']
     let data=request.body
     let result=await controller_cliente.putClientInfos(data, contentType, id)
-    
-    response.status(result.status_code)
-    response.json(result)
 })
+
 app.get('/2.0/touccan/cliente', cors(), async function(request, response){
     let result = await controller_cliente.getClient()
 

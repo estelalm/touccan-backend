@@ -49,10 +49,8 @@ const putUser = async function(data, contentType, id) {
         if(String(contentType).toLocaleLowerCase() == 'application/json'){
             if (
                 data.nome == '' || data.nome == undefined || data.nome == null || data.nome.length > 80 ||
-                data.cpf == '' || data.cpf == undefined || data.cpf == null || data.cpf.length > 11 ||
                 data.telefone == '' || data.telefone == undefined || data.telefone == null || data.telefone.length > 11 ||
                 data.cep == '' || data.cep == undefined || data.cep == null || data.cep.length > 8 ||
-                data.email == '' || data.email == undefined || data.email == null || data.email.length > 100 ||
                 data.data_nascimento == '' || data.data_nascimento == undefined || data.data_nascimento == null || data.data_nascimento.length > 10 ||
                 data.senha == '' || data.senha == undefined || data.senha == null || data.senha.length > 30 ||
                 data.foto == '' || data.foto == undefined || data.foto == null || data.foto.length > 200 || // supondo que a foto seja uma URL de até 200 caracteres
