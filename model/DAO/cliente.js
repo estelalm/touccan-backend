@@ -34,12 +34,8 @@ const updateClient = async function(data, id) {
 
             SET
                 nome_responsavel='${data.nome_responsavel}',
-                cpf_responsavel='${data.cpf_responsavel}',
-                email='${data.email}',
                 nome_fantasia='${data.nome_fantasia}',
-                razao_social='${data.razao_social}',
                 telefone=${data.telefone},
-                cnpj=${data.cnpj},
                 cep=${data.cep},
                 senha='${data.senha}',
                 foto='${data.foto}'

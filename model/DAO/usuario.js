@@ -32,10 +32,8 @@ const updateUser = async function(data, id) {
 
             SET
                 nome='${data.nome_responsavel}',
-                cpf='${data.cpf_responsavel}',
                 telefone=${data.telefone},
                 cep=${data.cep},
-                email='${data.email}',
                 data_nascimento='${data.data_nascimento}',
                 senha='${data.senha}',
                 foto='${data.foto}',
