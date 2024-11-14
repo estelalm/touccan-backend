@@ -38,6 +38,25 @@ const insertReportClient = async function(data) {
     }
 }
 
+const selectFeedbackUserReport = async function(id_usuario) {
+    try {
+        let sql = `select * from tbl_denuncia_cliente where id_usuario = ${id_usuario}`
+        let rs = await prisma.$queryRawUnsafe(sql)
+        return rs
+    } catch (error) {
+        return false
+    }
+}
+const selectFeedbackClientReport = async function(id_cliente) {
+    try {
+        let sql = `select * from tbl_denuncia_usuario where id_cliente = ${id_cliente}`
+        let rs = await prisma.$queryRawUnsafe(sql)
+        return rs
+    } catch (error) {
+        return false
+    }
+}
+
 const selectReportUserByID = async function(id) {
     try {
         let sql = `SELECT * FROM tbl_denuncia_usuario WHERE id = ${id}`
@@ -83,5 +102,7 @@ module.exports={
     lastIDReportUser,
     insertReportClient,
     selectReportClientByID,
-    lastIDReportClient
+    lastIDReportClient,
+    selectFeedbackUserReport,
+    selectFeedbackClientReport
 }

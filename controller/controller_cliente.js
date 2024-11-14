@@ -46,6 +46,43 @@ const postClient = async function(data, contentType){
     }
 }
 
+const putClientPremium = async function(id, data, contentType){
+    try {
+        if (String(contentType).toLowerCase() == 'application/json') {
+            idC = id
+            if (idC == '' || idC == undefined || idC == null || isNaN(idC)) {
+                return message.ERROR_INVALID_ID
+            } else if (data.premium !== 0 && data.premium !== 1) {
+                return message.ERROR_REQUIRED_FIELDS
+            } else {
+                let client = await clienteDAO.selectClienteId(idC)
+                if(client){
+                    let json = {}
+                    let rtnDAO = await clienteDAO.updateClientPremium(data.premium, idC)
+                    if(rtnDAO){
+                        let cliente = await clienteDAO.selectClienteId(idC)
+                        json.cliente=cliente
+                        json.status=message.SUCCESS_UPDATED_ITEM.status
+                        json.status_code=message.SUCCESS_UPDATED_ITEM.status_code
+                        json.message=message.SUCCESS_UPDATED_ITEM.message
+                        return json
+                    }
+                    else{
+                        return message.ERROR_INTERNAL_SERVER_DB
+                    }
+                }
+                else{
+                    return message.ERROR_NOT_FOUND
+                }
+            }
+        } else {
+            return message.ERROR_CONTENT_TYPE
+        }
+    } catch (error) {
+        return message.ERROR_INTERNAL_SERVER
+    }
+}
+
 const putClient = async function(data, contentType, id) {
     try {
         if(String(contentType).toLocaleLowerCase() == 'application/json'){
@@ -106,6 +143,48 @@ const deleteClient = async function(id){
         }
     } catch (error) {
         console.error(error);
+        return message.ERROR_INTERNAL_SERVER
+    }
+}
+
+const putClientInfos = async function(data, contentType, id) {
+    try {
+        if(String(contentType).toLocaleLowerCase() == 'application/json'){
+            if(id==''||id==undefined||id==null||isNaN(id))
+                return message.ERROR_INVALID_ID
+            else if (
+                data.nome_fantasia == '' || data.nome_fantasia == undefined || data.nome_fantasia == null || data.nome_fantasia.length > 100 ||
+                data.email == '' || data.email == undefined || data.email == null || data.email.length > 100 ||
+                data.telefone == '' || data.telefone == undefined || data.telefone == null || data.telefone.length > 11 ||
+                data.cep == '' || data.cep == undefined || data.cep == null || data.cep.length > 8 
+            )
+                return message.ERROR_REQUIRED_FIELDS
+            else{
+                let client = await clienteDAO.selectClienteId(id)
+                if(client){
+                    let json = {}
+                    let rtnDAO = await clienteDAO.updateClientInfos(id, data)
+                    console.log(rtnDAO)
+                    if(rtnDAO){
+                        let up = await clienteDAO.selectClienteId(id)
+                        json.cliente = up
+                        json.status=message.SUCCESS_UPDATED_ITEM.status
+                        json.status_code=message.SUCCESS_UPDATED_ITEM.status_code
+                        json.message=message.SUCCESS_UPDATED_ITEM.message
+                        return json
+                    }
+                    else{
+                        return message.ERROR_INTERNAL_SERVER_DB
+                    }
+                }
+                else    
+                    return message.ERROR_NOT_FOUND
+            }
+        }
+        else
+            return message.ERROR_CONTENT_TYPE
+    } catch (error) {
+        console.log(error);
         return message.ERROR_INTERNAL_SERVER
     }
 }
@@ -221,6 +300,8 @@ module.exports = {
     postClient,
     deleteClient,
     putClient,
+    putClientPremium,
+    putClientInfos,
     getClientId,
     callClientLogin
 }

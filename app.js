@@ -27,6 +27,7 @@ const controller_categoria = require('./controller/controller_categoria.js')
 const controller_dificuldade = require('./controller/controller_dificuldade.js')
 const controller_avaliacao = require('./controller/controller_avaliacao.js')
 const controller_denuncia = require('./controller/controller_denuncia.js')
+const controller_feedback = require('./controller/controller_feedback.js')
 
 /** Usuário */
 app.post('/2.0/touccan/usuario', cors(), bodyParserJSON, async function(request, response){
@@ -42,6 +43,15 @@ app.put('/2.0/touccan/usuario/:id', cors(), bodyParserJSON, async function(reque
     let contentType=request.headers['content-type']
     let data=request.body
     let result=await controller_usuario.putUser(data, contentType, id)
+    
+    response.status(result.status_code)
+    response.json(result)
+})
+app.put('/2.0/touccan/infos/usuario/:id', cors(), bodyParserJSON, async function(request, response){
+    let id=request.params.id
+    let contentType=request.headers['content-type']
+    let data=request.body
+    let result=await controller_usuario.putUserInfos(data, contentType, id)
     
     response.status(result.status_code)
     response.json(result)
@@ -90,10 +100,25 @@ app.put('/2.0/touccan/cliente/:id', cors(), bodyParserJSON, async function(reque
 app.delete('/2.0/touccan/cliente/:id', cors(), async function(request, response){
     let idClient = request.params.id
     let result = await controller_cliente.deleteClient(idClient)
+    response.status(result.status_code)
+    response.json(result)
+})
+app.put('/2.0/touccan/premium/cliente/:id', cors(), bodyParserJSON, async function(request, response){
+    let id=request.params.id
+    let contentType=request.headers['content-type']
+    let data=request.body
+    let result=await controller_cliente.putClientPremium(id, data, contentType)
     
     response.status(result.status_code)
     response.json(result)
 })
+app.put('/2.0/touccan/infos/cliente/:id', cors(), bodyParserJSON, async function(request, response){
+    let id=request.params.id
+    let contentType=request.headers['content-type']
+    let data=request.body
+    let result=await controller_cliente.putClientInfos(data, contentType, id)
+})
+
 app.get('/2.0/touccan/cliente', cors(), async function(request, response){
     let result = await controller_cliente.getClient()
 
@@ -127,6 +152,12 @@ app.post('/2.0/touccan/bicos', cors(), bodyParserJSON, async function(request, r
 })
 app.get('/2.0/touccan/bico', cors(), async function(request,response) {
     let result = await controller_bico.getBico()
+
+    response.status(result.status_code)
+    response.json(result)
+})
+app.get('/2.0/touccan/bico/premium', cors(), async function(request,response) {
+    let result = await controller_bico.getBicoClientPremium()
 
     response.status(result.status_code)
     response.json(result)
@@ -249,6 +280,15 @@ app.put('/2.0/touccan/cliente/cartao/:id', cors(), bodyParserJSON, async functio
     response.status(result.status_code)
     response.json(result)
 })
+app.put('/2.0/touccan/cliente/cartao/:id', cors(), async function(request, response){
+    let id=request.params.id
+    let contentType = request.headers['content-type']
+    let data = request.body
+    let result = await controller_cartao.putClientCard(data, id, contentType)
+
+    response.status(result.status_code)
+    response.json(result)
+})
 
 app.post('/2.0/touccan/usuario/cartao', cors(), bodyParserJSON, async function(request, response){
     let contentType = request.headers['content-type']
@@ -259,11 +299,16 @@ app.post('/2.0/touccan/usuario/cartao', cors(), bodyParserJSON, async function(r
     response.json(result)
 })
 
-app.put('/2.0/touccan/usuario/cartao/:id', cors(), bodyParserJSON, async function(request, response){
+app.get('/2.0/touccan/cliente/cartao/:id', cors(), bodyParserJSON, async function(request, response){
     let id=request.params.id
-    let contentType = request.headers['content-type']
-    let data = request.body
-    let result = await controller_cartao.putUserCard(data, id, contentType)
+    let result = await controller_cartao.getClientCard(id)
+
+    response.status(result.status_code)
+    response.json(result)
+})
+app.get('/2.0/touccan/usuario/cartao/:id', cors(), bodyParserJSON, async function(request, response){
+    let id=request.params.id
+    let result = await controller_cartao.getUserCard(id)
 
     response.status(result.status_code)
     response.json(result)
@@ -307,6 +352,23 @@ app.post('/2.0/touccan/denuncia/cliente', cors(), bodyParserJSON, async function
     response.json(result)
 })
 
+/** FeedBack Usuário */
+app.get('/2.0/touccan/feedback/usuario/:id', cors(), async function (request, response) {
+    let id = request.params.id
+    let result = await controller_feedback.feedbackUser(id)
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+/** FeedBack Cliente */
+app.get('/2.0/touccan/feedback/cliente/:id', cors(), async function (request, response) {
+    let id = request.params.id
+    let result = await controller_feedback.feedbackClient(id)
+
+    response.status(result.status_code)
+    response.json(result)
+})
 app.listen('8080', function(){
     console.log('API funcionando!!')
 })

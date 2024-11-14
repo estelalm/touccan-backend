@@ -175,9 +175,73 @@ const putUserCard=async function(data, id, contentType){
     }
 }
 
+const getClientCard = async function(id) {
+    try {
+        let idC = id
+        if (idC == null || idC == undefined || idC == '' || isNaN(idC)) {
+            return message.ERROR_INVALID_ID
+        } else {
+            let client = await controller_client.getClientId(id)          
+            if (client) {
+                let data = await cartaoDAO.selectClientCard(idC)
+                if (data) {
+                    if (data.length > 0) {
+                        let json = {}
+                        json.cartao = data
+                        json.quantidade=data.length
+                        json.status_code=200
+                        return json
+                    } else {
+                        return message.ERROR_NOT_FOUND
+                    }
+                } else {
+                    return message.ERROR_INTERNAL_SERVER_DB
+                }
+            } else {
+                return message.ERROR_NOT_FOUND
+            }
+        }
+    } catch (error) {
+        return message.ERROR_INTERNAL_SERVER
+    }
+}
+
+const getUserCard = async function(id) {
+    try {
+        let idU = id
+        if (idU == null || idU == undefined || idU == '' || isNaN(idU)) {
+            return message.ERROR_INVALID_ID
+        } else {
+            let user = await controller_user.getUserId(idU)          
+            if (user) {
+                let data = await cartaoDAO.selectUserCard(idU)
+                if (data) {
+                    if (data.length > 0) {
+                        let json = {}
+                        json.cartao = data
+                        json.quantidade=data.length
+                        json.status_code=200
+                        return json
+                    } else {
+                        return message.ERROR_NOT_FOUND
+                    }
+                } else {
+                    return message.ERROR_INTERNAL_SERVER_DB
+                }
+            } else {
+                return message.ERROR_NOT_FOUND
+            }
+        }
+    } catch (error) {
+        return message.ERROR_INTERNAL_SERVER
+    }
+}
+
 module.exports={
     postClientCard,
     postUserCard,
     putClientCard,
-    putUserCard
+    putUserCard,
+    getClientCard,
+    getUserCard
 }
