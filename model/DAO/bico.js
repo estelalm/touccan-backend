@@ -5,7 +5,7 @@ const prisma = new PrismaClient()
 
 const insertBico = async function(data) {
     try {
-        let sql=`INSERT INTO tbl_bico (titulo, descricao, horario_inicio, data_inicio, horario_limite, data_limite, salario, finalizado, id_dificuldade, id_categoria, id_cliente)
+        let sql=`INSERT INTO tbl_bico (titulo, descricao, horario_inicio, data_inicio, horario_limite, data_limite, salario, final_c, final_u, finalizado, id_dificuldade, id_categoria, id_cliente)
             VALUES (
                 '${data.titulo}', 
                 '${data.descricao}', 
@@ -14,6 +14,8 @@ const insertBico = async function(data) {
                 '${data.horario_limite}', 
                 '${data.data_limite}', 
                 ${data.salario}, 
+                0,
+                0,
                 0, 
                 ${data.id_dificuldade}, 
                 ${data.id_categoria}, 
