@@ -106,6 +106,17 @@ const selectBicoClientId = async function (id) {
     }
 }
 
+const selectBicoPendent = async function (id) {
+    try {
+        let sql = `SELECT * FROM tbl_bico WHERE tbl_bico.id_cliente = ${id} AND finalizado=0 ORDER BY id DESC`
+        console.log(sql)
+        let rs = await prisma.$queryRawUnsafe(sql)
+        return rs
+    } catch (error) {
+        return false
+    }
+}
+
 const selectBicoByFilter = async function(script){
     try {
         let sql = `SELECT * FROM tbl_bico ${script}`
@@ -196,6 +207,7 @@ module.exports={
     deleteCandidate,
     selectBicoByID,
     selectAllBicos,
+    selectBicoPendent,
     selectBicoByFilter,
     lastID,
     deleteBico,
