@@ -51,6 +51,25 @@ const updateUser = async function(data, id) {
         return false
     }
 }
+
+const updateUserPassword = async function(data, id) {
+    try {
+        let sql=`
+            UPDATE tbl_usuario
+
+            SET
+                senha='${data.senha}'
+
+            WHERE id='${id}';
+        `
+        let rs = await prisma.$executeRawUnsafe(sql)
+        return rs
+    } catch (error) {
+        console.log(error);
+        return false
+    }
+}
+
 const updateUserInfos = async function(id, data){
     try {
         let sql = `UPDATE tbl_usuario SET
@@ -114,6 +133,7 @@ const lastID = async function(){
 module.exports = {
     insertUser,
     updateUser,
+    updateUserPassword,
     updateUserInfos,
     selectUser,
     selectUserId,

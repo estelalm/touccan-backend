@@ -125,6 +125,43 @@ const putClient = async function(data, contentType, id) {
     }
 }
 
+const putClientPassword = async function(data, contentType, id) {
+    try {
+        if(String(contentType).toLocaleLowerCase() == 'application/json'){
+            if(id==''||id==undefined||id==null||isNaN(id))
+                return message.ERROR_INVALID_ID
+            else if (
+                data.senha == '' || data.senha == undefined || data.senha == null || data.senha.length > 30
+            )
+                return message.ERROR_REQUIRED_FIELDS
+            else{
+                let client = await clienteDAO.selectClienteId(id)
+                if(client.length>0){
+                    let json = {}
+                    let rtnDAO = await clienteDAO.updateClientPassword(data, id)
+                    if(rtnDAO){
+                        json.cliente=data
+                        json.status=message.SUCCESS_UPDATED_ITEM.status
+                        json.status_code=message.SUCCESS_UPDATED_ITEM.status_code
+                        json.message=message.SUCCESS_UPDATED_ITEM.message
+                        return json
+                    }
+                    else{
+                        return message.ERROR_INTERNAL_SERVER_DB
+                    }
+                }
+                else    
+                    return message.ERROR_NOT_FOUND
+            }
+        }
+        else
+            return message.ERROR_CONTENT_TYPE
+    } catch (error) {
+        console.log(error);
+        return message.ERROR_INTERNAL_SERVER
+    }
+}
+
 const deleteClient = async function(id){
     try {
         if(id==''||id==undefined||id==null||isNaN(id))
@@ -301,6 +338,7 @@ module.exports = {
     deleteClient,
     putClient,
     putClientPremium,
+    putClientPassword,
     putClientInfos,
     getClientId,
     callClientLogin

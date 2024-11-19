@@ -89,6 +89,42 @@ const putUser = async function(data, contentType, id) {
     }
 }
 
+const putUserPassword = async function(data, contentType, id) {
+    try {
+        if(String(contentType).toLocaleLowerCase() == 'application/json'){
+            if (
+                data.senha == '' || data.senha == undefined || data.senha == null || data.senha.length > 30
+            )
+                return message.ERROR_REQUIRED_FIELDS
+            else if(id==''||id==undefined||id==null||isNaN(id))
+                return message.ERROR_INVALID_ID
+            else{
+                let user = await usuarioDAO.selectUserId(id)
+                if(user){
+                    let json={}
+                    let rtnDAO=await usuarioDAO.updateUserPassword(data, id)
+                    if(rtnDAO){
+                        json.usuario=data
+                        json.status=message.SUCCESS_UPDATED_ITEM.status
+                        json.status_code=message.SUCCESS_UPDATED_ITEM.status_code
+                        json.message=message.SUCCESS_UPDATED_ITEM.message
+                        return json
+                    }
+                    else
+                        return message.ERROR_INTERNAL_SERVER_DB
+                }
+                else
+                    return message.ERROR_NOT_FOUND
+            }
+                
+        }
+        else
+            return message.ERROR_CONTENT_TYPE
+    } catch (error) {
+        return message.ERROR_INTERNAL_SERVER
+    }
+}
+
 const putUserInfos = async function(data, contentType, id) {
     try {
         if(String(contentType).toLocaleLowerCase() == 'application/json'){
@@ -240,6 +276,7 @@ module.exports = {
     getUser,
     postUser,
     putUser,
+    putUserPassword,
     putUserInfos,
     getUserId,
     postUserLogin
