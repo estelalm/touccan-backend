@@ -47,6 +47,15 @@ app.put('/2.0/touccan/usuario/:id', cors(), bodyParserJSON, async function(reque
     response.status(result.status_code)
     response.json(result)
 })
+app.put('/2.0/touccan/senha/usuario/:id', cors(), bodyParserJSON, async function(request, response){
+    let id=request.params.id
+    let contentType=request.headers['content-type']
+    let data=request.body
+    let result=await controller_usuario.putUserPassword(data, contentType, id)
+    
+    response.status(result.status_code)
+    response.json(result)
+})
 app.put('/2.0/touccan/infos/usuario/:id', cors(), bodyParserJSON, async function(request, response){
     let id=request.params.id
     let contentType=request.headers['content-type']
@@ -93,6 +102,15 @@ app.put('/2.0/touccan/cliente/:id', cors(), bodyParserJSON, async function(reque
     let contentType=request.headers['content-type']
     let data=request.body
     let result=await controller_cliente.putClient(data, contentType, id)
+    
+    response.status(result.status_code)
+    response.json(result)
+})
+app.put('/2.0/touccan/senha/cliente/:id', cors(), bodyParserJSON, async function(request, response){
+    let id=request.params.id
+    let contentType=request.headers['content-type']
+    let data=request.body
+    let result=await controller_cliente.putClientPassword(data, contentType, id)
     
     response.status(result.status_code)
     response.json(result)
