@@ -8,6 +8,7 @@ const clienteDAO = require('../model/DAO/cliente.js')
 const message = require('./modulo/config.js')
 const controller_cliente = require('./controller_cliente.js')
 const controller_user = require('./controller_usuario.js')
+const e = require('express')
 
 const postBico = async function(data, contentType) {
     try {
@@ -628,6 +629,33 @@ const excluirBico = async(id) => {
     }
 }
 
+const getCanditatesTrue = async function (id_bico) {
+    try {
+        let id = id_bico
+        if (id == '' || id == undefined || id == null || isNaN(id)) {
+            return message.ERROR_INVALID_ID
+        } else {
+            let rs = await bicoDAO.selectCandidatesByAceitos(id)
+            if (rs) {
+                if (rs.length > 0) {
+                    let json = {}
+                    json.candidatos = rs
+                    json.status_code = 200
+                    json.status = true
+
+                    return json
+                } else {
+                    return message.ERROR_NOT_FOUND
+                }
+            } else {
+                return message.ERROR_INTERNAL_SERVER_DB
+            }
+        }
+    } catch (error) {
+        return message.ERROR_INTERNAL_SERVER
+    }
+}
+
 const getAllCandidates = async() => {
     try {
         let data=await bicoDAO.selectAllCandidates()
@@ -693,5 +721,6 @@ module.exports={
     getCandidatesByBicoID,
     getBicoClientPremium,
     putBicoFinalC,
-    putBicoFinalU
+    putBicoFinalU,
+    getCanditatesTrue
 }
