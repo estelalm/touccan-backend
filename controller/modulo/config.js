@@ -17,6 +17,11 @@ const ERROR_CONTENT_TYPE  = {status: false, status_code: 415, message: 'O conten
 
 const ERROR_INTERNAL_SERVER= {status: false, status_code: 500, message: 'Não foi possivel processar a requisição, devido ao um erro na camada de negócio/controle da aplicação. Contate o administrador da API.'}
 
+const ERROR_VIACEP_REQUEST_FAILED = {status: false, status_code: 500, message: 'Não foi possivel processar a requisição, devido ao um erro na camada do viaCep. Contate o administrador da API.'}
+
+const ERROR_INVALID_CEP = {status: false, status_code: 500, message: 'O cep encaminhado na requisição não é válido'}
+
+
 
 
 
@@ -53,5 +58,7 @@ module.exports = {
     SUCCESS_CREATED_USER,
     SUCCESS_DELETED_USER,
     ERROR_BICO_NOT_FOUND,
-    ERROR_CLIENT_NOT_FOUND
+    ERROR_CLIENT_NOT_FOUND,
+    ERROR_VIACEP_REQUEST_FAILED,
+    ERROR_INVALID_CEP 
 }

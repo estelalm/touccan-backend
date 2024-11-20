@@ -1,12 +1,13 @@
 const { PrismaClient } = require('@prisma/client')
 const { sqltag } = require('@prisma/client/runtime/library');
+//const fetch = require('node-fetch');
 
 
 const prisma = new PrismaClient()
 
-const insertClient = async function(data){
+const insertClient = async function(data, id_end){
     try {
-        let sql = `INSERT INTO tbl_cliente(nome_fantasia, razao_social, email, telefone, cnpj, cep, senha, cpf_responsavel, nome_responsavel, foto) VALUES 
+        let sql = `INSERT INTO tbl_cliente(nome_fantasia, razao_social, email, telefone, cnpj, cep, senha, cpf_responsavel, nome_responsavel, foto, id_endereco) VALUES 
         (
             '${data.nome_fantasia}',
             '${data.razao_social}',
@@ -17,7 +18,8 @@ const insertClient = async function(data){
             '${data.senha}',
             '${data.cpf_responsavel}',
             '${data.nome_responsavel}',
-            "https://pin.it/1GpCbflTW"
+            "https://pin.it/1GpCbflTW",
+            ${id_end}
         )`
 
         let rs = await prisma.$executeRawUnsafe(sql)
@@ -28,14 +30,17 @@ const insertClient = async function(data){
     }
 }
 
-const insertEndereco = async function(cep) {
+const insertEndereco = async function(endereco) {
     try {
-        // Chamada ao ViaCEP
-        const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
-        if (!response.ok) throw new Error("Erro ao consultar ViaCEP");
-        const endereco = await response.json();
+        let sql = `INSERT INTO tbl_endereco(rua, bairro, cidade, estado) VALUES (
+        '${endereco.logradouro}',
+        '${endereco.bairro}',
+        '${endereco.localidade}',
+        '${endereco.uf}'
+        )`
 
-        let sql = `INSERT INTO tbl_endereco(rua, bairro, )`
+        let rs = await prisma.$executeRawUnsafe(sql)
+        return rs
       } catch (error) {
         console.error("Erro no backend:", error);
         return false
@@ -59,7 +64,6 @@ const updateClient = async function(data, id) {
     try {
         let sql=`
             UPDATE tbl_cliente 
-
             SET
                 nome_responsavel='${data.nome_responsavel}',
                 nome_fantasia='${data.nome_fantasia}',
@@ -74,6 +78,23 @@ const updateClient = async function(data, id) {
         return rs
     } catch (error) {
         console.log(error);
+        return false
+    }
+}
+
+const updateEndereco = async function (params, id) {
+    try {
+        let sql = `
+        UPDATE tbl_endereco SET
+        INSERT INTO tbl_endereco(rua, bairro, cidade, estado) VALUES (
+        rua = '${endereco.logradouro}',
+        bairro ='${endereco.bairro}',
+        cidade = '${endereco.localidade}',
+        estado = '${endereco.uf}'
+
+        WHERE id = ${id}
+        `        
+    } catch (error) {
         return false
     }
 }
@@ -205,6 +226,29 @@ const lastID = async function(){
     
 }
 
+const lastIDE = async function(){
+    try {
+        let sql = `SELECT id FROM tbl_endereco ORDER BY id DESC LIMIT 1;`
+        let sqlID = await prisma.$queryRawUnsafe(sql)
+
+        return sqlID
+    } catch (error) {
+        return false
+    }
+    
+}
+
+const selectEnderecoId = async function(id){
+    try {
+        let sql = `SELECT * FROM tbl_endereco WHERE id = ${id}`
+        let rs = await prisma.$queryRawUnsafe(sql)
+        return rs
+    } catch (error) {
+        console.log(error);
+        return false
+    }
+}
+
 module.exports ={
     insertClient,
     updateClientPremium,
@@ -216,5 +260,9 @@ module.exports ={
     selectClientForReturnBico,
     updateClientInfos,
     callLogin,
-    lastID
+    lastID,
+    insertEndereco,
+    lastIDE,
+    selectEnderecoId,
+    updateEndereco
 }
