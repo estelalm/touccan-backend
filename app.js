@@ -224,6 +224,22 @@ app.put('/2.0/touccan/candidato', cors(), bodyParserJSON, async function(request
     response.status(result.status_code)
     response.json(result)
 })
+app.put('/2.0/touccan/finalizar/cliente', cors(), bodyParserJSON, async function(request, response){
+    let contentType=request.headers['content-type']
+    let data=request.body
+    let result=await controller_bico.putBicoFinalC(data, contentType)
+    
+    response.status(result.status_code)
+    response.json(result)
+})
+app.put('/2.0/touccan/finalizar/usuario', cors(), bodyParserJSON, async function(request, response){
+    let contentType=request.headers['content-type']
+    let data=request.body
+    let result=await controller_bico.putBicoFinalU(data, contentType)
+    
+    response.status(result.status_code)
+    response.json(result)
+})
 app.delete('/2.0/touccan/candidato', cors(), bodyParserJSON, async function(request, response){
     let contentType=request.headers['content-type']
     let data=request.body
