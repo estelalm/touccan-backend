@@ -396,7 +396,7 @@ const getBicoPendent = async function(id){
 
 const getBicoByCEP = async function(cepUser) {
     try {
-        if(cepUser.length!=8 || cepUser==null || cepUser==undefined || cepUser=='' || isNaN(cepUser))
+        if(cepUser.length!=8 || cepUser==null || cepUser==undefined || cepUser=='' )
             return message.ERROR_REQUIRED_FIELDS
         else{
             //cepUser = '06622310'
