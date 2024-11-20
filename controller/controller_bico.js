@@ -593,6 +593,18 @@ const getBicoClientPremium = async function () {
         
         if (bicos) {
             let json = {}
+            for (let index = 0; index < bicos.length; index++) {
+                const element = bicos[index];
+                let cat = await categoriaDAO.selectCategoryId(element.id_categoria)
+                delete element.id_categoria
+                element.categoria = cat
+                let dif = await dificuldadeDAO.selectDifficultyId(element.id_dificuldade)
+                delete element.id_dificuldade
+                element.dificuldade = dif
+                let cli = await clienteDAO.selectClientForReturnBico(element.id_cliente)
+                delete element.id_cliente
+                element.cliente = cli
+            }
             json.bico = bicos
             json.status = message.SUCCESS_CREATED_ITEM.status
             json.status_code = message.SUCCESS_CREATED_ITEM.status_code
@@ -631,8 +643,10 @@ const excluirBico = async(id) => {
 
 const getCanditatesTrue = async function (id_bico) {
     try {
-        let id = id_bico
-        if (id == '' || id == undefined || id == null || isNaN(id)) {
+        let id = parseInt(id_bico)
+        console.log(id);
+        
+        if (id == '' ) {
             return message.ERROR_INVALID_ID
         } else {
             let rs = await bicoDAO.selectCandidatesByAceitos(id)

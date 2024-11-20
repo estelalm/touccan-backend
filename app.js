@@ -203,8 +203,12 @@ app.get('/2.0/touccan/bico/candidato/:id', cors(), async function(request, respo
     response.status(result.status_code)
     response.json(result)
 })
-app.get('/2.0/touccan/bico/canditados/contratados/:id', cors(), async function(params) {
-    
+app.get('/2.0/touccan/bico/canditados/contratados/:id', cors(), async function(request, response) {
+    let id_bico = request.params.id
+    let result = await controller_bico.getCanditatesTrue(id_bico)
+
+    response.status(result.status_code)
+    response.json(result)
 })
 app.get('/2.0/touccan/bico/cep/:cep', cors(), async function(request,response) {
     let cep=request.params.cep
