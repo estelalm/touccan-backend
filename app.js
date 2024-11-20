@@ -99,6 +99,13 @@ app.post('/2.0/touccan/cliente', cors(), bodyParserJSON, async function(request,
     response.status(result.status_code)
     response.json(result)
 })
+app.get('/2.0/touccan/cliente/historico/:id', cors(), async function(request, response){
+    let id = request.params.id
+    let result = await controller_cliente.getHistoricoCliente(id)
+    
+    response.status(result.status_code)
+    response.json(result)
+})
 app.put('/2.0/touccan/cliente/:id', cors(), bodyParserJSON, async function(request, response){
     let id=request.params.id
     let contentType=request.headers['content-type']

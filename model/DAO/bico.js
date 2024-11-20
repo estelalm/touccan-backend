@@ -168,7 +168,6 @@ const selectBicoByCandidate = async function(id){
         return false
     }
 }
-
 const selectBicoClientPremium = async function(){
     try {
         let sql = 'SELECT tbl_bico.id as id_bico, tbl_bico.* FROM tbl_bico JOIN tbl_cliente on tbl_cliente.id = tbl_bico.id_cliente WHERE tbl_cliente.premium = 1 ORDER BY tbl_bico.id DESC;'

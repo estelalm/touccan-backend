@@ -106,7 +106,29 @@ const putClientPremium = async function(id, data, contentType){
         return message.ERROR_INTERNAL_SERVER
     }
 }
-
+const getHistoricoCliente = async function (id) {
+    try {
+        let id_c = parseInt(id)
+        console.log(id_c);
+        if ( isNaN(id_c)) {
+           return message.ERROR_INVALID_ID
+        } else { 
+            let his = await clienteDAO.selectHistoricoCliente(id_c)
+            if (his) {
+                let json = {}
+                json.historico = his
+                json.status_code = 200
+                json.quantidade = his.length
+                return json
+            }else{
+                return message.ERROR_INTERNAL_SERVER_DB
+            }
+            
+        }
+    } catch (error) {
+        return message.ERROR_INTERNAL_SERVER
+    }
+}
 const putClient = async function (data, contentType, id) {
     try {
         if (String(contentType).toLowerCase() !== 'application/json') {
@@ -396,5 +418,6 @@ module.exports = {
     putClientPassword,
     putClientInfos,
     getClientId,
-    callClientLogin
+    callClientLogin,
+    getHistoricoCliente
 }
