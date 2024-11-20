@@ -3,6 +3,30 @@ const { sqltag } = require('@prisma/client/runtime/library');
 
 const prisma = new PrismaClient()
 
+const finalizarClient = async function (data) {
+    try {
+        let sql = `UPDATE tbl_bico SET 
+                    final_c = ${data.final}
+                    WHERE tbl_bico.id = ${data.id} `
+        let rs=await prisma.$executeRawUnsafe(sql)
+        return rs
+    } catch (error) {
+        return false
+    }
+}
+
+const finalizarUser = async function (data) {
+    try {
+        let sql = `UPDATE tbl_bico SET 
+                    final_u = ${data.final}
+                    WHERE tbl_bico.id = ${data.id} `
+        let rs=await prisma.$executeRawUnsafe(sql)
+        return rs
+    } catch (error) {
+        return false
+    }
+}
+
 const insertBico = async function(data) {
     try {
         let sql=`INSERT INTO tbl_bico (titulo, descricao, horario_inicio, data_inicio, horario_limite, data_limite, salario, final_c, final_u, finalizado, id_dificuldade, id_categoria, id_cliente)
@@ -217,5 +241,7 @@ module.exports={
     selectBicoByCandidate,
     selectAllCandidates,
     selectCandidatesByBicoID,
-    selectBicoClientPremium
+    selectBicoClientPremium,
+    finalizarClient,
+    finalizarUser
 }

@@ -49,6 +49,84 @@ const postBico = async function(data, contentType) {
     }
 }
 
+const putBicoFinalC = async function (data, contentType) {
+    try {
+        if (String(contentType).toLowerCase()=='application/json') {
+            let id = parseInt(data.id_bico)
+            if (data.final_c == '' || data.final_c == undefined || data.final_c ==  null ||
+                id == '' || id == undefined || id ==  null 
+            ) {
+                return message.ERROR_REQUIRED_FIELDS
+            } else {
+                let json = {}
+                let rtnDAO=await bicoDAO.finalizarClient(data)
+                if (rtnDAO) {
+                    let get = bicoDAO.selectBicoByID(id)
+                    if (get) {
+                        if (get.length < 0) {
+                            json.bico =  await bicoDAO.selectBicoByID(lastID[0].id)
+                            json.status=message.SUCCESS_CREATED_ITEM.status
+                            json.status_code=message.SUCCESS_CREATED_ITEM.status_code
+                            json.message=message.SUCCESS_CREATED_ITEM.message
+                            return json
+                        } else {
+                            return message.ERROR_BICO_NOT_FOUND
+                        }
+                        
+                    } else {
+                     return message.ERROR_INTERNAL_SERVER_DB   
+                    }
+                } else {
+                    return message.ERROR_INTERNAL_SERVER_DB
+                }
+            }
+        } else {
+            return message.ERROR_CONTENT_TYPE
+        }
+    } catch (error) {
+        return message.ERROR_INTERNAL_SERVER
+    }
+}
+
+const putBicoFinalU = async function (data, contentType) {
+    try {
+        if (String(contentType).toLowerCase()=='application/json') {
+            let id = parseInt(data.id_bico)
+            if (data.final_u == '' || data.final_u == undefined || data.final_u ==  null ||
+                id == '' || id == undefined || id ==  null 
+            ) {
+                return message.ERROR_REQUIRED_FIELDS
+            } else {
+                let json = {}
+                let rtnDAO=await bicoDAO.finalizarClient(data)
+                if (rtnDAO) {
+                    let get = bicoDAO.selectBicoByID(id)
+                    if (get) {
+                        if (get.length < 0) {
+                            json.bico =  await bicoDAO.selectBicoByID(lastID[0].id)
+                            json.status=message.SUCCESS_CREATED_ITEM.status
+                            json.status_code=message.SUCCESS_CREATED_ITEM.status_code
+                            json.message=message.SUCCESS_CREATED_ITEM.message
+                            return json
+                        } else {
+                            return message.ERROR_BICO_NOT_FOUND
+                        }
+                        
+                    } else {
+                     return message.ERROR_INTERNAL_SERVER_DB   
+                    }
+                } else {
+                    return message.ERROR_INTERNAL_SERVER_DB
+                }
+            }
+        } else {
+            return message.ERROR_CONTENT_TYPE
+        }
+    } catch (error) {
+        return message.ERROR_INTERNAL_SERVER
+    }
+}
+
 const postCandidate = async function(data, contentType){
     try {
         if(String(contentType).toLowerCase()=='application/json'){
@@ -613,5 +691,7 @@ module.exports={
     excluirBico,
     getAllCandidates,
     getCandidatesByBicoID,
-    getBicoClientPremium
+    getBicoClientPremium,
+    putBicoFinalC,
+    putBicoFinalU
 }

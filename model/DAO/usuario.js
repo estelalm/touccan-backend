@@ -6,7 +6,7 @@ const prisma = new PrismaClient()
 
 const insertUser = async function(data){
     try {
-        let sql = `INSERT INTO tbl_usuario(nome, cpf, telefone, cep, email, data_nascimento, senha, foto) VALUES 
+        let sql = `INSERT INTO tbl_usuario(nome, cpf, telefone, cep, email, data_nascimento, senha, foto, formação) VALUES 
         (
             '${data.nome}',
             '${data.cpf}',
@@ -15,7 +15,8 @@ const insertUser = async function(data){
             '${data.email}',
             '${data.data_nascimento}',
             '${data.senha}',
-            "https://pin.it/yLIpdh8u7"
+            "https://pin.it/yLIpdh8u7",
+            "Ainda não informada nenhuma formação!"
         )`
 
         let rs = await prisma.$executeRawUnsafe(sql)
@@ -32,15 +33,16 @@ const updateUser = async function(data, id) {
             UPDATE tbl_usuario
 
             SET
-                nome='${data.nome_responsavel}',
+                nome='${data.nome}',
                 telefone=${data.telefone},
                 cep=${data.cep},
+                cpf=${data.cpf},
                 data_nascimento='${data.data_nascimento}',
                 senha='${data.senha}',
                 foto='${data.foto}',
                 biografia='${data.biografia}',
                 habilidade='${data.habilidade}',
-                id_formacao=${data.id_formacao},
+                formacao='${data.formacao}',
                 id_disponibilidade=${data.id_disponibilidade}
 
             WHERE id='${id}';
@@ -99,7 +101,7 @@ const selectUser = async function(){
 
 const selectUserId = async function(id){
     try {
-        let sql = `SELECT * FROM tbl_usuario WHERE id = ${id}`
+        let sql = `SELECT * FROM tbl_usuario WHERE tbl_usuario.id = ${id}`
         let rs = await prisma.$queryRawUnsafe(sql)
         return rs
     } catch (error) {
