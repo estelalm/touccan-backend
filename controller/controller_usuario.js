@@ -51,12 +51,13 @@ const putUser = async function(data, contentType, id) {
                 data.nome == '' || data.nome == undefined || data.nome == null || data.nome.length > 80 ||
                 data.telefone == '' || data.telefone == undefined || data.telefone == null || data.telefone.length > 11 ||
                 data.cep == '' || data.cep == undefined || data.cep == null || data.cep.length > 8 ||
+                data.cpf == '' || data.cpf == undefined || data.cpf == null || data.cpf.length > 11 ||
                 data.data_nascimento == '' || data.data_nascimento == undefined || data.data_nascimento == null || data.data_nascimento.length > 10 ||
                 data.senha == '' || data.senha == undefined || data.senha == null || data.senha.length > 30 ||
                 data.foto == '' || data.foto == undefined || data.foto == null || data.foto.length > 200 || // supondo que a foto seja uma URL de até 200 caracteres
                 data.biografia == '' || data.biografia == undefined || data.biografia == null || data.biografia.length > 500 || // limite de caracteres para biografia
                 data.habilidade == '' || data.habilidade == undefined || data.habilidade == null || data.habilidade.length > 500 || // limite para habilidade
-                data.id_formacao == undefined || data.id_formacao == null || isNaN(data.id_formacao) || // verifica se o id_formacao está definido
+                data.formacao == undefined || data.formacao == null || data.formacao.length > 255 || // verifica se o id_formacao está definido
                 data.id_disponibilidade == undefined || data.id_disponibilidade == null || isNaN(data.id_disponibilidade)// verifica se o id_disponibilidade está definido
             )
                 return message.ERROR_REQUIRED_FIELDS
@@ -68,7 +69,8 @@ const putUser = async function(data, contentType, id) {
                     let json={}
                     let rtnDAO=await usuarioDAO.updateUser(data, id)
                     if(rtnDAO){
-                        json.usuario=data
+                        let user = await usuarioDAO.selectUserId(id)
+                        json.usuario=user
                         json.status=message.SUCCESS_UPDATED_ITEM.status
                         json.status_code=message.SUCCESS_UPDATED_ITEM.status_code
                         json.message=message.SUCCESS_UPDATED_ITEM.message
@@ -198,14 +200,16 @@ const getUserId = async function(id){
         {
             let json = {}
             let rtnUsuario = await usuarioDAO.selectUserId(idU)
+            //console.log(rtnUsuario)
             if (rtnUsuario) 
             {
                 if (rtnUsuario.length > 0) 
                 {
-                    const element = rtnUsuario[0]
-                    json.usuario = element
+                
+                    json.usuario = rtnUsuario
                     json.status = message.SUCCESS_FOUND_USER.status
                     json.status_code = message.SUCCESS_FOUND_USER.status_code
+                    //console.log(json.usuario);
                     return json
                 } 
                 else 

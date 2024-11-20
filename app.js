@@ -43,6 +43,7 @@ app.put('/2.0/touccan/usuario/:id', cors(), bodyParserJSON, async function(reque
     let contentType=request.headers['content-type']
     let data=request.body
     let result=await controller_usuario.putUser(data, contentType, id)
+    console.log(result)
     
     response.status(result.status_code)
     response.json(result)
@@ -73,10 +74,11 @@ app.get('/2.0/touccan/usuario', cors(), async function(request, response){
 })
 app.get('/2.0/touccan/usuario/:id', cors(), async function(request, response){
     let idUser = request.params.id
-    let result = await controller_usuario.getUserId(idUser)
-
-    response.status(result.status_code)
-    response.json(result)
+    let results = await controller_usuario.getUserId(idUser)
+    console.log(results);
+    
+    response.status(results.status_code)
+    response.json(results)
 })
 app.post('/2.0/touccan/login/usuario', cors(), bodyParserJSON, async function(request, response){
     let contentType = request.headers['content-type']
