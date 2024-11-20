@@ -218,10 +218,13 @@ const selectCandidatesByBicoID = async(id) => {
 
 const selectCandidatesByAceitos = async(id) => {
     try {
-        let sql = `SELECT b.titulo AS "bico", u.nome AS "candidato", c.escolhido, b.id AS "id_bico", u.id AS "id_candidato" FROM tbl_usuario_bico AS c
-                 JOIN tbl_bico AS b ON c.id_bico=b.id
-                 JOIN tbl_usuario AS u ON c.id_usuario=u.id
-                 WHERE b.id=${id} AND c.escolhido = 1;`
+        let sql = `SELECT tbl_bico.titulo AS "bico", tbl_usuario.nome AS "candidato", tbl_usuario_bico.escolhido, tbl_bico.id as "id_bico", tbl_usuario.id "id_canditado" FROM tbl_usuario_bico
+                 JOIN tbl_bico  ON tbl_usuario_bico.id_bico=tbl_bico.id
+                 JOIN tbl_usuario ON tbl_usuario_bico.id_usuario=tbl_usuario.id
+                 WHERE tbl_bico.id=${id} AND tbl_usuario_bico.escolhido = 1;`
+        console.log(sql);
+
+        
         let rs = await prisma.$queryRawUnsafe(sql)
         return rs
     } catch (error) {

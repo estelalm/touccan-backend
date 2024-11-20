@@ -646,14 +646,15 @@ const getCanditatesTrue = async function (id_bico) {
         let id = parseInt(id_bico)
         console.log(id);
         
-        if (id == '' ) {
+        if (id == '' || id==undefined || id == null || isNaN(id)) {
             return message.ERROR_INVALID_ID
         } else {
             let rs = await bicoDAO.selectCandidatesByAceitos(id)
-            if (rs) {
+            console.log(rs);
+            if (rs != false) {
                 if (rs.length > 0) {
                     let json = {}
-                    json.candidatos = rs
+                    json.candidatos = rs[0]
                     json.status_code = 200
                     json.status = true
 

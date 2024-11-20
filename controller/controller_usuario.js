@@ -205,8 +205,7 @@ const getUserId = async function(id){
             {
                 if (rtnUsuario.length > 0) 
                 {
-                
-                    json.usuario = rtnUsuario
+                    json.usuario = rtnUsuario[0]
                     json.status = message.SUCCESS_FOUND_USER.status
                     json.status_code = message.SUCCESS_FOUND_USER.status_code
                     //console.log(json.usuario);
