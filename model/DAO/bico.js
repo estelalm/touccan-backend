@@ -171,7 +171,7 @@ const selectBicoByCandidate = async function(id){
 
 const selectBicoClientPremium = async function(){
     try {
-        let sql = 'SELECT * FROM tbl_bico JOIN tbl_cliente on tbl_cliente.id = tbl_bico.id_cliente WHERE tbl_cliente.premium = 1 ORDER BY tbl_bico.id DESC;'
+        let sql = 'SELECT tbl_bico.id as id_bico, tbl_bico.* FROM tbl_bico JOIN tbl_cliente on tbl_cliente.id = tbl_bico.id_cliente WHERE tbl_cliente.premium = 1 ORDER BY tbl_bico.id DESC;'
         let rs = await prisma.$queryRawUnsafe(sql)
         return rs
     } catch (error) {
@@ -216,6 +216,20 @@ const selectCandidatesByBicoID = async(id) => {
     }
 }
 
+const selectCandidatesByAceitos = async(id) => {
+    try {
+        let sql = `SELECT b.titulo AS "bico", u.nome AS "candidato", c.escolhido, b.id AS "id_bico", u.id AS "id_candidato" FROM tbl_usuario_bico AS c
+                 JOIN tbl_bico AS b ON c.id_bico=b.id
+                 JOIN tbl_usuario AS u ON c.id_usuario=u.id
+                 WHERE b.id=${id} AND c.escolhido = 1;`
+        let rs = await prisma.$queryRawUnsafe(sql)
+        return rs
+    } catch (error) {
+        console.error(error);
+        return false
+    }
+}
+
 const lastID = async function(){
     try {
         let sql = `SELECT id FROM tbl_bico ORDER BY id DESC LIMIT 1;`
@@ -243,5 +257,6 @@ module.exports={
     selectCandidatesByBicoID,
     selectBicoClientPremium,
     finalizarClient,
-    finalizarUser
+    finalizarUser,
+    selectCandidatesByAceitos
 }
