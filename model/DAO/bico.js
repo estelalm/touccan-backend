@@ -5,9 +5,9 @@ const prisma = new PrismaClient()
 
 const finalizarClient = async function (data) {
     try {
-        let sql = `UPDATE final SET 
+        let sql = `UPDATE tbl_bico SET 
                     final_c = ${data.final_c}
-                    WHERE id_bico=${data.id_bico}`
+                    WHERE id=${data.id_bico}`
                     console.log(sql);
                     
         let rs=await prisma.$executeRawUnsafe(sql)
@@ -20,9 +20,9 @@ const finalizarClient = async function (data) {
 const finalizarUser = async function (data) {
     try {
         
-        let sql = `UPDATE final SET 
+        let sql = `UPDATE tbl_bico SET 
                     final_u = ${data.final_u}
-                    WHERE id_bico=${data.id_bico}`
+                    WHERE id=${data.id_bico}`
                     console.log(sql);
                     
         let rs=await prisma.$executeRawUnsafe(sql)
