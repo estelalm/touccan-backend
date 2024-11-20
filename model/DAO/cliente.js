@@ -28,6 +28,20 @@ const insertClient = async function(data){
     }
 }
 
+const insertEndereco = async function(cep) {
+    try {
+        // Chamada ao ViaCEP
+        const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+        if (!response.ok) throw new Error("Erro ao consultar ViaCEP");
+        const endereco = await response.json();
+
+        let sql = `INSERT INTO tbl_endereco(rua, bairro, )`
+      } catch (error) {
+        console.error("Erro no backend:", error);
+        return false
+      }
+}
+
 const updateClientPremium = async function(premium, id){
     try {
         let sql = `UPDATE tbl_cliente SET 
