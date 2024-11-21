@@ -47,6 +47,8 @@ const updateUser = async function(data, id) {
 
             WHERE id='${id}';
         `
+        console.log(sql);
+        
         let rs = await prisma.$executeRawUnsafe(sql)
         return rs
     } catch (error) {
