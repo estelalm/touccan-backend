@@ -46,6 +46,7 @@ const postClient = async function (data, contentType) {
         // Busca cliente e endereço para retorno
         const cliente = await clienteDAO.selectClienteId(idC);
         const enderecoCompleto = await clienteDAO.selectEnderecoId(idE);
+        
 
         if (cliente && enderecoCompleto) {
             // Monta a resposta
@@ -68,8 +69,6 @@ const postClient = async function (data, contentType) {
         return message.ERROR_INTERNAL_SERVER;
     }
 };
-
-
 const putClientPremium = async function(id, data, contentType){
     try {
         if (String(contentType).toLowerCase() == 'application/json') {
@@ -223,8 +222,6 @@ const putClient = async function (data, contentType, id) {
         return message.ERROR_INTERNAL_SERVER;
     }
 };
-
-
 const putClientPassword = async function(data, contentType, id) {
     try {
         if(String(contentType).toLocaleLowerCase() == 'application/json'){
@@ -261,7 +258,6 @@ const putClientPassword = async function(data, contentType, id) {
         return message.ERROR_INTERNAL_SERVER
     }
 }
-
 const deleteClient = async function(id){
     try {
         if(id==''||id==undefined||id==null||isNaN(id))
@@ -283,7 +279,6 @@ const deleteClient = async function(id){
         return message.ERROR_INTERNAL_SERVER
     }
 }
-
 const putClientInfos = async function(data, contentType, id) {
     try {
         if(String(contentType).toLocaleLowerCase() == 'application/json'){
@@ -325,13 +320,17 @@ const putClientInfos = async function(data, contentType, id) {
         return message.ERROR_INTERNAL_SERVER
     }
 }
-
 const getClient = async function(){
     try {
         let dados = await clienteDAO.selectClient()
         let json = {}
         if (dados) 
         {
+            for (let index = 0; index < dados.length; index++) {
+                const element = dados[index];
+                const enderecoCompleto = await clienteDAO.selectEnderecoId(element.id_endereco);
+                element.endereco =enderecoCompleto
+            }
             json.cliente = dados
             json.status = message.SUCCESS_CREATED_ITEM.status
             json.status_code = message.SUCCESS_CREATED_ITEM.status_code
@@ -362,6 +361,8 @@ const getClientId = async function(id){
                 if (rtnClient.length > 0) 
                 {
                     const element = rtnClient[0]
+                    const enderecoCompleto = await clienteDAO.selectEnderecoId(element.id_endereco);
+                    element.endereco =enderecoCompleto
                     json.cliente = element
                     json.status = message.SUCCESS_CREATED_ITEM.status
                     json.status_code = message.SUCCESS_CREATED_ITEM.status_code
