@@ -6,7 +6,7 @@ const prisma = new PrismaClient()
 
 const insertUser = async function(data){
     try {
-        let sql = `INSERT INTO tbl_usuario(nome, cpf, telefone, cep, email, data_nascimento, senha, foto, formação) VALUES 
+        let sql = `INSERT INTO tbl_usuario(nome, cpf, telefone, cep, email, data_nascimento, senha, foto, formacao) VALUES 
         (
             '${data.nome}',
             '${data.cpf}',
