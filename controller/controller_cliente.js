@@ -7,18 +7,19 @@ const postClient = async function (data, contentType) {
         if (String(contentType).toLocaleLowerCase() !== 'application/json') {
             return message.ERROR_CONTENT_TYPE;
         }
-
+        console.log(data);
+        
         // Validações de campos obrigatórios
         if (
-            !data.nome_fantasia || data.nome_fantasia.length > 100 ||
-            !data.razao_social || data.razao_social.length > 100 ||
-            !data.email || data.email.length > 100 ||
-            !data.telefone || data.telefone.length > 11 ||
-            !data.cnpj || data.cnpj.length > 14 ||
-            !data.cep || data.cep.length !== 8 || isNaN(data.cep) || 
-            !data.senha || data.senha.length > 30 ||
-            !data.cpf_responsavel || data.cpf_responsavel.length > 11 ||
-            !data.nome_responsavel || data.nome_responsavel.length > 45
+            data.nome_fantasia === null|| data.nome_fantasia === undefined || data.nome_fantasia.length > 100 ||
+            data.razao_social ===null || data.razao_social === undefined || data.razao_social.length > 100 ||
+            data.email === null || data.email === undefined || data.email.length > 100 ||
+            data.telefone === null || data.telefone === undefined || data.telefone.length > 11 ||
+            data.cnpj === null || data.cnpj === undefined || data.cnpj.length > 14 ||
+            data.cep === null || data.cep === undefined|| data.cep.length !== 8 || 
+            data.senha === null || data.senha === undefined|| data.senha.length > 30 ||
+            data.cpf_responsavel === null || data.cpf_responsavel === undefined || data.cpf_responsavel.length > 11 ||
+            data.nome_responsavel === null || data.nome_responsavel === undefined || data.nome_responsavel.length > 45
         ) {
             return message.ERROR_REQUIRED_FIELDS;
         }
