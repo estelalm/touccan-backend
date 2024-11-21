@@ -13,19 +13,17 @@ const postRatingUser = async function (data, contentType) {
                 return message.ERROR_REQUIRED_FIELDS
             } else {
                 let json = {}
-                let rtnDAO = await avaliacaoDAO.insertRatingUser(data)                
-                if (rtnDAO) {                    
+                let rtnDAO = await avaliacaoDAO.insertRatingUser(data)    
+                console.log(rtnDAO);
+                            
+                if (rtnDAO) {        
                     let lastID = await avaliacaoDAO.lastIDRatingUser()
                     json.avaliacao = await avaliacaoDAO.selectRatingUserByID(lastID[0].id)
-                    let objectMessage
-                    if(rtnDAO.meta.code === '1644') {
-                        objectMessage = message.ERROR_USER_NOT_FOUND
-                    } else {
-                        objectMessage = message.SUCCESS_CREATED_ITEM 
-                    }
-                    json.status = objectMessage.status
-                    json.status_code = objectMessage.status_code
-                    json.message = objectMessage.message
+                    
+                    console.log("oi");
+                    json.status = message.SUCCESS_CREATED_ITEM.status
+                    json.status_code = message.SUCCESS_CREATED_ITEM.status_code
+                    json.message = message.SUCCESS_CREATED_ITEM.message
                     return json
                 }
                 else
@@ -56,15 +54,9 @@ const postRatingClient = async function (data, contentType) {
                 if (rtnDAO) {
                     let lastID = await avaliacaoDAO.lastIDRatingClient()
                     json.avaliacao = await avaliacaoDAO.selectRatingClientByID(lastID[0].id)
-                    let objectMessage
-                    if(rtnDAO.meta.code === '1644') {
-                        objectMessage = message.ERROR_CLIENT_NOT_FOUND
-                    } else {
-                        objectMessage = message.SUCCESS_CREATED_ITEM 
-                    }
-                    json.status = objectMessage.status
-                    json.status_code = objectMessage.status_code
-                    json.message = objectMessage.message
+                    json.status = message.SUCCESS_CREATED_ITEM.status
+                    json.status_code = message.SUCCESS_CREATED_ITEM.status_code
+                    json.message = message.SUCCESS_CREATED_ITEM.message
                     return json
                 }
                 else

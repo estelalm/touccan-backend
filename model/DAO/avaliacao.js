@@ -15,6 +15,8 @@ const insertRatingUser = async function(data) {
             );`
         console.log(sql);
         let rs = await prisma.$executeRawUnsafe(sql)
+        console.log(rs);
+        
         return rs
     } catch (error) {
         console.error(error);
