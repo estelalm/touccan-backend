@@ -82,11 +82,10 @@ const updateClient = async function(data, id) {
     }
 }
 
-const updateEndereco = async function (params, id) {
+const updateEndereco = async function (id, endereco) {
     try {
         let sql = `
         UPDATE tbl_endereco SET
-        INSERT INTO tbl_endereco(rua, bairro, cidade, estado) VALUES (
         rua = '${endereco.logradouro}',
         bairro ='${endereco.bairro}',
         cidade = '${endereco.localidade}',
@@ -94,6 +93,10 @@ const updateEndereco = async function (params, id) {
 
         WHERE id = ${id}
         `        
+        console.log(sql);
+        
+        let rs = await prisma.$executeRawUnsafe(sql)
+        return rs
     } catch (error) {
         return false
     }
