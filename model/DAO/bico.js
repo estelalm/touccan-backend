@@ -156,7 +156,7 @@ const selectBicoByFilter = async function(script){
 
 const selectBicoByCandidate = async function(id){
     try {
-        let sql=`SELECT b.id as "id_bico", b.titulo AS "bico", b.descricao, b.horario_inicio, b.horario_limite, b.data_inicio, b.data_limite, b.salario, b.finalizado, c.nome_fantasia AS "nome_cliente", u.nome AS "nome_usuario" FROM tbl_usuario_bico AS i
+        let sql=`SELECT b.id AS "id_bico", c.id AS "id_cliente", b.titulo AS "bico", b.descricao, b.horario_inicio, b.horario_limite, b.data_inicio, b.data_limite, b.salario, b.finalizado, c.nome_fantasia AS "nome_cliente", u.nome AS "nome_usuario" FROM tbl_usuario_bico AS i
                  JOIN tbl_usuario AS u ON u.id = i.id_usuario
                  JOIN tbl_bico AS b ON b.id = i.id_bico
                  JOIN tbl_cliente AS c on c.id=b.id_cliente
