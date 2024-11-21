@@ -106,6 +106,27 @@ const putClientPremium = async function(id, data, contentType){
         return message.ERROR_INTERNAL_SERVER
     }
 }
+const getEndereco = async function (id) {
+    try {
+        let idE = parseInt(id)
+        if (idE === '' || idE === undefined || idE===null || isNaN(idE)) {
+            return message.ERROR_INVALID_ID
+        } else {
+            let rtn = await clienteDAO.selectEnderecoId(idE)
+            if (rtn) {
+                let json = {
+                    endereco: rtn,
+                    status_code: 200
+                }
+                return json
+            } else {
+                return message.ERROR_INTERNAL_SERVER_DB
+            }
+        }
+    } catch (error) {
+        return message.ERROR_INTERNAL_SERVER
+    }    
+}
 const getHistoricoCliente = async function (id) {
     try {
         let id_c = parseInt(id)
@@ -419,5 +440,6 @@ module.exports = {
     putClientInfos,
     getClientId,
     callClientLogin,
-    getHistoricoCliente
+    getHistoricoCliente,
+    getEndereco
 }

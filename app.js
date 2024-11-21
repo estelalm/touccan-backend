@@ -426,6 +426,15 @@ app.get('/2.0/touccan/feedback/cliente/:id', cors(), async function (request, re
     response.status(result.status_code)
     response.json(result)
 })
+
+/** ENDEREÇO */
+app.get('/2.0/touccan/endereco/:id', cors(), async function (request, response) {
+    let id = request.params.id
+    let result = await controller_cliente.getEndereco(id)
+
+    response.status(result.status_code)
+    response.json(result)
+})
 app.listen('8080', function(){
     console.log('API funcionando!!')
 })
