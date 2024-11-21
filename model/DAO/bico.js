@@ -6,8 +6,10 @@ const prisma = new PrismaClient()
 const finalizarClient = async function (data) {
     try {
         let sql = `UPDATE tbl_bico SET 
-                    final_c = ${data.final}
-                    WHERE tbl_bico.id = ${data.id} `
+                    final_c = ${data.final_c}
+                    WHERE id=${data.id_bico}`
+                    console.log(sql);
+                    
         let rs=await prisma.$executeRawUnsafe(sql)
         return rs
     } catch (error) {
@@ -17,9 +19,12 @@ const finalizarClient = async function (data) {
 
 const finalizarUser = async function (data) {
     try {
+        
         let sql = `UPDATE tbl_bico SET 
-                    final_u = ${data.final}
-                    WHERE tbl_bico.id = ${data.id} `
+                    final_u = ${data.final_u}
+                    WHERE id=${data.id_bico}`
+                    console.log(sql);
+                    
         let rs=await prisma.$executeRawUnsafe(sql)
         return rs
     } catch (error) {
@@ -168,7 +173,6 @@ const selectBicoByCandidate = async function(id){
         return false
     }
 }
-
 const selectBicoClientPremium = async function(){
     try {
         let sql = 'SELECT tbl_bico.id as id_bico, tbl_bico.* FROM tbl_bico JOIN tbl_cliente on tbl_cliente.id = tbl_bico.id_cliente WHERE tbl_cliente.premium = 1 ORDER BY tbl_bico.id DESC;'

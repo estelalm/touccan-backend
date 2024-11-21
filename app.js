@@ -99,6 +99,13 @@ app.post('/2.0/touccan/cliente', cors(), bodyParserJSON, async function(request,
     response.status(result.status_code)
     response.json(result)
 })
+app.get('/2.0/touccan/cliente/historico/:id', cors(), async function(request, response){
+    let id = request.params.id
+    let result = await controller_cliente.getHistoricoCliente(id)
+    
+    response.status(result.status_code)
+    response.json(result)
+})
 app.put('/2.0/touccan/cliente/:id', cors(), bodyParserJSON, async function(request, response){
     let id=request.params.id
     let contentType=request.headers['content-type']
@@ -233,7 +240,7 @@ app.put('/2.0/touccan/candidato', cors(), bodyParserJSON, async function(request
     response.status(result.status_code)
     response.json(result)
 })
-app.put('/2.0/touccan/finalizar/cliente', cors(), bodyParserJSON, async function(request, response){
+app.post('/2.0/touccan/finalizar/cliente', cors(), bodyParserJSON, async function(request, response){
     let contentType=request.headers['content-type']
     let data=request.body
     let result=await controller_bico.putBicoFinalC(data, contentType)
@@ -241,7 +248,7 @@ app.put('/2.0/touccan/finalizar/cliente', cors(), bodyParserJSON, async function
     response.status(result.status_code)
     response.json(result)
 })
-app.put('/2.0/touccan/finalizar/usuario', cors(), bodyParserJSON, async function(request, response){
+app.post('/2.0/touccan/finalizar/usuario', cors(), bodyParserJSON, async function(request, response){
     let contentType=request.headers['content-type']
     let data=request.body
     let result=await controller_bico.putBicoFinalU(data, contentType)
@@ -415,6 +422,15 @@ app.get('/2.0/touccan/feedback/usuario/:id', cors(), async function (request, re
 app.get('/2.0/touccan/feedback/cliente/:id', cors(), async function (request, response) {
     let id = request.params.id
     let result = await controller_feedback.feedbackClient(id)
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+/** ENDEREÇO */
+app.get('/2.0/touccan/endereco/:id', cors(), async function (request, response) {
+    let id = request.params.id
+    let result = await controller_cliente.getEndereco(id)
 
     response.status(result.status_code)
     response.json(result)

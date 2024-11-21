@@ -54,18 +54,21 @@ const putBicoFinalC = async function (data, contentType) {
     try {
         if (String(contentType).toLowerCase()=='application/json') {
             let id = parseInt(data.id_bico)
-            if (data.final_c == '' || data.final_c == undefined || data.final_c ==  null ||
+            if (data.final_c === '' || data.final_c === undefined || data.final_c ===  null ||
                 id == '' || id == undefined || id ==  null 
             ) {
                 return message.ERROR_REQUIRED_FIELDS
             } else {
                 let json = {}
+                console.log(data);
                 let rtnDAO=await bicoDAO.finalizarClient(data)
                 if (rtnDAO) {
-                    let get = bicoDAO.selectBicoByID(id)
+                    let get = await bicoDAO.selectBicoByID(id)
+                    console.log(get);
+                    
                     if (get) {
-                        if (get.length < 0) {
-                            json.bico =  await bicoDAO.selectBicoByID(lastID[0].id)
+                        if (get.length > 0) {
+                            json.bico =  await bicoDAO.selectBicoByID(id)
                             json.status=message.SUCCESS_CREATED_ITEM.status
                             json.status_code=message.SUCCESS_CREATED_ITEM.status_code
                             json.message=message.SUCCESS_CREATED_ITEM.message
@@ -93,18 +96,23 @@ const putBicoFinalU = async function (data, contentType) {
     try {
         if (String(contentType).toLowerCase()=='application/json') {
             let id = parseInt(data.id_bico)
-            if (data.final_u == '' || data.final_u == undefined || data.final_u ==  null ||
+            if (data.final_u === '' || data.final_u === undefined || data.final_u ===  null ||
                 id == '' || id == undefined || id ==  null 
             ) {
                 return message.ERROR_REQUIRED_FIELDS
             } else {
                 let json = {}
-                let rtnDAO=await bicoDAO.finalizarClient(data)
+                console.log(data);
+                let rtnDAO=await bicoDAO.finalizarUser(data)
+                console.log(rtnDAO);
+                
                 if (rtnDAO) {
-                    let get = bicoDAO.selectBicoByID(id)
+                    let get = await bicoDAO.selectBicoByID(id)
+                    console.log(get + "ue");
+                    
                     if (get) {
-                        if (get.length < 0) {
-                            json.bico =  await bicoDAO.selectBicoByID(lastID[0].id)
+                        if (get.length > 0) {
+                            json.bico =  await bicoDAO.selectBicoByID(id)
                             json.status=message.SUCCESS_CREATED_ITEM.status
                             json.status_code=message.SUCCESS_CREATED_ITEM.status_code
                             json.message=message.SUCCESS_CREATED_ITEM.message
@@ -112,8 +120,8 @@ const putBicoFinalU = async function (data, contentType) {
                         } else {
                             return message.ERROR_BICO_NOT_FOUND
                         }
-                        
                     } else {
+                        console.log('oi')                        
                      return message.ERROR_INTERNAL_SERVER_DB   
                     }
                 } else {
