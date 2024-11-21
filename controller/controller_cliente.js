@@ -187,6 +187,8 @@ const putClient = async function (data, contentType, id) {
         if (enderecoData.erro) {
             return message.ERROR_INVALID_CEP; // Caso o CEP seja inválido
         }
+        console.log(client[0].id_endereco);
+        
 
         // Atualiza o endereço no banco de dados
         const enderecoAtualizado = await clienteDAO.updateEndereco(client[0].id_endereco, enderecoData);
