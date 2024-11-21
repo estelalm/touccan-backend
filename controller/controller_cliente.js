@@ -7,18 +7,19 @@ const postClient = async function (data, contentType) {
         if (String(contentType).toLocaleLowerCase() !== 'application/json') {
             return message.ERROR_CONTENT_TYPE;
         }
-
+        console.log(data);
+        
         // Validações de campos obrigatórios
         if (
-            !data.nome_fantasia || data.nome_fantasia.length > 100 ||
-            !data.razao_social || data.razao_social.length > 100 ||
-            !data.email || data.email.length > 100 ||
-            !data.telefone || data.telefone.length > 11 ||
-            !data.cnpj || data.cnpj.length > 14 ||
-            !data.cep || data.cep.length !== 8 || isNaN(data.cep) || 
-            !data.senha || data.senha.length > 30 ||
-            !data.cpf_responsavel || data.cpf_responsavel.length > 11 ||
-            !data.nome_responsavel || data.nome_responsavel.length > 45
+            data.nome_fantasia === null|| data.nome_fantasia === undefined || data.nome_fantasia.length > 100 ||
+            data.razao_social ===null || data.razao_social === undefined || data.razao_social.length > 100 ||
+            data.email === null || data.email === undefined || data.email.length > 100 ||
+            data.telefone === null || data.telefone === undefined || data.telefone.length > 11 ||
+            data.cnpj === null || data.cnpj === undefined || data.cnpj.length > 14 ||
+            data.cep === null || data.cep === undefined|| data.cep.length !== 8 || 
+            data.senha === null || data.senha === undefined|| data.senha.length > 30 ||
+            data.cpf_responsavel === null || data.cpf_responsavel === undefined || data.cpf_responsavel.length > 11 ||
+            data.nome_responsavel === null || data.nome_responsavel === undefined || data.nome_responsavel.length > 45
         ) {
             return message.ERROR_REQUIRED_FIELDS;
         }
@@ -46,6 +47,7 @@ const postClient = async function (data, contentType) {
         // Busca cliente e endereço para retorno
         const cliente = await clienteDAO.selectClienteId(idC);
         const enderecoCompleto = await clienteDAO.selectEnderecoId(idE);
+        
 
         if (cliente && enderecoCompleto) {
             // Monta a resposta
@@ -68,8 +70,6 @@ const postClient = async function (data, contentType) {
         return message.ERROR_INTERNAL_SERVER;
     }
 };
-
-
 const putClientPremium = async function(id, data, contentType){
     try {
         if (String(contentType).toLowerCase() == 'application/json') {
@@ -223,8 +223,6 @@ const putClient = async function (data, contentType, id) {
         return message.ERROR_INTERNAL_SERVER;
     }
 };
-
-
 const putClientPassword = async function(data, contentType, id) {
     try {
         if(String(contentType).toLocaleLowerCase() == 'application/json'){
@@ -261,7 +259,6 @@ const putClientPassword = async function(data, contentType, id) {
         return message.ERROR_INTERNAL_SERVER
     }
 }
-
 const deleteClient = async function(id){
     try {
         if(id==''||id==undefined||id==null||isNaN(id))
@@ -283,7 +280,6 @@ const deleteClient = async function(id){
         return message.ERROR_INTERNAL_SERVER
     }
 }
-
 const putClientInfos = async function(data, contentType, id) {
     try {
         if(String(contentType).toLocaleLowerCase() == 'application/json'){
@@ -325,13 +321,17 @@ const putClientInfos = async function(data, contentType, id) {
         return message.ERROR_INTERNAL_SERVER
     }
 }
-
 const getClient = async function(){
     try {
         let dados = await clienteDAO.selectClient()
         let json = {}
         if (dados) 
         {
+            for (let index = 0; index < dados.length; index++) {
+                const element = dados[index];
+                const enderecoCompleto = await clienteDAO.selectEnderecoId(element.id_endereco);
+                element.endereco =enderecoCompleto
+            }
             json.cliente = dados
             json.status = message.SUCCESS_CREATED_ITEM.status
             json.status_code = message.SUCCESS_CREATED_ITEM.status_code
@@ -362,6 +362,8 @@ const getClientId = async function(id){
                 if (rtnClient.length > 0) 
                 {
                     const element = rtnClient[0]
+                    const enderecoCompleto = await clienteDAO.selectEnderecoId(element.id_endereco);
+                    element.endereco =enderecoCompleto
                     json.cliente = element
                     json.status = message.SUCCESS_CREATED_ITEM.status
                     json.status_code = message.SUCCESS_CREATED_ITEM.status_code
