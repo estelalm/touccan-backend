@@ -8,6 +8,7 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
+const Stripe = require('stripe');
 const app = express()
 app.use((request, response, next) =>{
     response.header('Access-Control-Allow-Origin', '*')
@@ -28,6 +29,79 @@ const controller_dificuldade = require('./controller/controller_dificuldade.js')
 const controller_avaliacao = require('./controller/controller_avaliacao.js')
 const controller_denuncia = require('./controller/controller_denuncia.js')
 const controller_feedback = require('./controller/controller_feedback.js')
+
+/** PAGAMENTOS */
+
+const stripe = new Stripe('sk_test_51Po5PQRrCgv8o8S3y5pW3iLE8aplBy9gp3evbOvdNpD9UqujlWxSlAmfHdAZmb8yhAp0ZY3laXSpGKkMkulWNAbX00a5wAn0SV'); // Substitua pela chave secreta de teste
+
+app.use(express.json());
+
+app.post('/2.0/touccan/pagamento/usuario/conectar-usuario', async (request, response) => {
+  try {
+    // Criar conta conectada no modo de teste
+    const account = await stripe.accounts.create({
+      type: 'express',
+    });
+
+    // Gerar link de onboarding
+    const accountLink = await stripe.accountLinks.create({
+      account: account.id,
+      refresh_url: 'https://seuapp.com/onboarding/refresh', // Testar comportamento ao cancelar
+      return_url: 'https://seuapp.com/onboarding/complete', // Testar comportamento ao completar
+      type: 'account_onboarding',
+    });
+
+    response.json({ accountLink: accountLink.url, accountId: account.id });
+  } catch (error) {
+    console.error(error);
+    response.status(500).json({ error: error.message });
+  }
+})
+
+app.get('/2.0/touccan/pagamento/usuario/status-conta', async (req, res) => {
+    const { accountId } = req.query;
+    try {
+      const account = await stripe.accounts.retrieve(accountId);
+      res.json({ status: account.details_submitted ? 'completed' : 'pending' });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: error.message });
+    }
+  })
+
+  app.post('/2.0/touccan/pagamento/cliente/pagar', async (req, res) => {
+    const { amount, paymentMethodId, connectedAccountId, preco} = req.body;
+  
+    try {
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount, // Valor em centavos (ex.: 1000 = R$ 10,00)
+        currency: 'brl',
+        payment_method: paymentMethodId, // Use cartões de teste
+        confirm: true, // Confirma automaticamente no modo de teste
+        transfer_data: {
+          destination: connectedAccountId, // Conta conectada do recebedor
+        },
+      });
+  
+      res.json({ paymentIntent });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: error.message });
+    }
+  })
+  
+  app.get('/2.0/touccan/pagamento/cliente/status-pagamento', async (req, res) => {
+    const { paymentIntentId } = req.query;
+  
+    try {
+      const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+      res.json({ status: paymentIntent.status });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: error.message });
+    }
+  })  
+  
 
 /** Usuário */
 app.post('/2.0/touccan/usuario', cors(), bodyParserJSON, async function(request, response){
