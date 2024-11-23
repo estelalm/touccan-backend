@@ -32,7 +32,7 @@ const controller_feedback = require('./controller/controller_feedback.js')
 
 /** PAGAMENTOS */
 
-const stripe = new Stripe('sk_test_51Po5PQRrCgv8o8S3y5pW3iLE8aplBy9gp3evbOvdNpD9UqujlWxSlAmfHdAZmb8yhAp0ZY3laXSpGKkMkulWNAbX00a5wAn0SV'); // Substitua pela chave secreta de teste
+const stripe = new Stripe('chave'); // Substitua pela chave secreta de teste
 
 app.use(express.json());
 
@@ -89,7 +89,7 @@ app.get('/2.0/touccan/pagamento/usuario/status-conta', async (req, res) => {
       res.status(500).json({ error: error.message });
     }
   })
-  
+
   app.get('/2.0/touccan/pagamento/cliente/status-pagamento', async (req, res) => {
     const { paymentIntentId } = req.query;
   
