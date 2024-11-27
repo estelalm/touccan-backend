@@ -181,6 +181,21 @@ const selectClienteId = async function(id){
     }
 }
 
+const selectClientRelations = async function(id) {
+    try {
+        let sql = `SELECT u.nome AS "nome_usuario", u.foto AS "foto_usuario", u.id AS "id_usuario" FROM tbl_usuario_bico AS c
+                   JOIN tbl_bico AS b ON c.id_bico=b.id
+                   JOIN tbl_usuario AS u ON c.id_usuario=u.id
+                   JOIN tbl_cliente AS cl ON b.id_cliente=cl.id
+                   WHERE c.escolhido = 1 AND cl.id=${id};`
+        let rs = await prisma.$queryRawUnsafe(sql)
+        return rs
+    } catch (error){
+        console.log(error);
+        return false
+    }
+}
+
 const selectClientForReturnBico = async function(id) {
     try {
         let sql = `SELECT id, nome_fantasia, cep FROM tbl_cliente WHERE id = ${id}`
@@ -278,6 +293,7 @@ module.exports ={
     lastID,
     insertEndereco,
     lastIDE,
+    selectClientRelations,
     selectEnderecoId,
     updateEndereco,
     selectHistoricoCliente

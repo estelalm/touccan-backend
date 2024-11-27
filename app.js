@@ -154,6 +154,13 @@ app.get('/2.0/touccan/usuario/:id', cors(), async function(request, response){
     response.status(results.status_code)
     response.json(results)
 })
+app.get('/2.0/touccan/usuario/relacoes/:id', cors(), async function(request, response){
+    let idUser = request.params.id
+    let results = await controller_usuario.getUserRelations(idUser)
+    
+    response.status(results.status_code)
+    response.json(results)
+})
 app.post('/2.0/touccan/login/usuario', cors(), bodyParserJSON, async function(request, response){
     let contentType = request.headers['content-type']
     let data = request.body 
@@ -176,6 +183,13 @@ app.post('/2.0/touccan/cliente', cors(), bodyParserJSON, async function(request,
 app.get('/2.0/touccan/cliente/historico/:id', cors(), async function(request, response){
     let id = request.params.id
     let result = await controller_cliente.getHistoricoCliente(id)
+    
+    response.status(result.status_code)
+    response.json(result)
+})
+app.get('/2.0/touccan/cliente/relacoes/:id', cors(), async function(request, response){
+    let id = request.params.id
+    let result = await controller_cliente.getClientRelations(id)
     
     response.status(result.status_code)
     response.json(result)

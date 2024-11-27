@@ -112,6 +112,21 @@ const selectUserId = async function(id){
     }
 }
 
+const selectUserRelations = async function(id) {
+    try {
+        let sql = `SELECT cl.nome_fantasia AS "nome_cliente", cl.foto AS "foto_cliente", cl.id AS "id_cliente" FROM tbl_usuario_bico AS c
+                   JOIN tbl_bico AS b ON c.id_bico=b.id
+                   JOIN tbl_usuario AS u ON c.id_usuario=u.id
+                   JOIN tbl_cliente AS cl ON b.id_cliente=cl.id
+                   WHERE c.escolhido = 1 AND u.id = ${id};`
+        let rs = await prisma.$queryRawUnsafe(sql)
+        return rs
+    } catch (error){
+        console.log(error);
+        return false
+    }
+}
+
 const callLogin = async function(email, pw){
     try {
         let sql = `CALL sp_login_usuario('${email}', '${pw}');`        
@@ -142,6 +157,7 @@ module.exports = {
     updateUserInfos,
     selectUser,
     selectUserId,
+    selectUserRelations,
     callLogin,
     lastID
 }
