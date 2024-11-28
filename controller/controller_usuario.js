@@ -228,6 +228,34 @@ const getUserId = async function(id){
     }
 }
 
+const getUserRelations = async function(id){
+    try {
+        let idU = id
+        if (idU == '' || idU == null || isNaN(idU) || idU == undefined) 
+        {
+            return message.ERROR_INVALID_ID
+        }
+        else
+        {
+            let json = {}
+            let rtnUsuario = await usuarioDAO.selectUserRelations(id)
+            if (rtnUsuario) {
+                if(rtnUsuario.length>0){
+                    json.clientes=rtnUsuario
+                    json.status_code=200
+                    return json
+                }
+                else
+                    return message.ERROR_NOT_FOUND
+            } 
+            else 
+                return message.ERROR_INTERNAL_SERVER_DB    
+        }
+    } catch (error) {
+        return message.ERROR_INTERNAL_SERVER
+    }
+}
+
 const postUserLogin = async function(data, contentType){
     console.log(data)
     try {
@@ -284,5 +312,6 @@ module.exports = {
     putUserPassword,
     putUserInfos,
     getUserId,
+    getUserRelations,
     postUserLogin
 }
