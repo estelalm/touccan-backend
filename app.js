@@ -46,8 +46,8 @@ app.post('/2.0/touccan/pagamento/usuario/conectar-usuario', async (request, resp
     // Gerar link de onboarding
     const accountLink = await stripe.accountLinks.create({
       account: account.id,
-      refresh_url: 'https://seuapp.com/onboarding/refresh', // Testar comportamento ao cancelar
-      return_url: 'https://seuapp.com/onboarding/complete', // Testar comportamento ao completar
+      refresh_url: 'myapp://onboarding/refresh', // Abre o app em caso de cancelamento
+      return_url: 'myapp://onboarding/complete', // Abre o app ao completar
       type: 'account_onboarding',
     });
 
