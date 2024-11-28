@@ -32,76 +32,54 @@ const controller_feedback = require('./controller/controller_feedback.js')
 
 /** PAGAMENTOS */
 
-const stripe = new Stripe('sk_test_51Po5PQRrCgv8o8S3y5pW3iLE8aplBy9gp3evbOvdNpD9UqujlWxSlAmfHdAZmb8yhAp0ZY3laXSpGKkMkulWNAbX00a5wAn0SV'); // Substitua pela chave secreta de teste
-
-app.use(express.json());
-
-app.post('/2.0/touccan/pagamento/usuario/conectar-usuario', async (request, response) => {
-  try {
-    // Criar conta conectada no modo de teste
-    const account = await stripe.accounts.create({
-      type: 'express',
-    });
-
-    // Gerar link de onboarding
-    const accountLink = await stripe.accountLinks.create({
-      account: account.id,
-      refresh_url: 'myapp://onboarding/refresh', // Abre o app em caso de cancelamento
-      return_url: 'myapp://onboarding/complete', // Abre o app ao completar
-      type: 'account_onboarding',
-    });
-
-    response.json({ accountLink: accountLink.url, accountId: account.id });
-  } catch (error) {
-    console.error(error);
-    response.status(500).json({ error: error.message });
-  }
-})
-
-app.get('/2.0/touccan/pagamento/usuario/status-conta', async (req, res) => {
-    const { accountId } = req.query;
-    try {
-      const account = await stripe.accounts.retrieve(accountId);
-      res.json({ status: account.details_submitted ? 'completed' : 'pending' });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: error.message });
+const { MercadoPagoConfig, Payment, MercadoPago } = require('mercadopago')
+const client = new MercadoPagoConfig(
+    {
+        accessToken: 'APP_USR-7186513777788039-091623-be1b55d679dcfeaec50e2646381835b5-473604831',
+        options: {
+            timeout: 5000,
+            idempotencyKey: 'abccfcccc'
+        }
     }
-  })
+);
+const payment = new Payment(client);
 
-  app.post('/2.0/touccan/pagamento/cliente/pagar', async (req, res) => {
-    const { amount, paymentMethodId, connectedAccountId, preco} = req.body;
-  
-    try {
-      const paymentIntent = await stripe.paymentIntents.create({
-        amount, // Valor em centavos (ex.: 1000 = R$ 10,00)
-        currency: 'brl',
-        payment_method: paymentMethodId, // Use cartões de teste
-        confirm: true, // Confirma automaticamente no modo de teste
-        transfer_data: {
-          destination: connectedAccountId, // Conta conectada do recebedor
+app.post('/criar-pagamento',cors(), bodyParserJSON, async function(request, response){
+    const dadosBody=request.body
+    // const body = {
+    //     transaction_amount: dadosBody.transaction_amount,
+    //     description: dadosBody.description,
+    //     payment_method_id: dadosBody.paymentMethodId,
+    //     payer: {
+    //         email: dadosBody.email,
+    //         identification: {
+    //             type: dadosBody.identificationType,
+    //             number: dadosBody.number
+    //         }
+    //     }
+    // }
+    const paymentData = {
+        transaction_amount: dadosBody.amount, // Valor da transação
+        token: dadosBody.token,  // Token do cartão
+        description: 'Descrição do produto',
+        installments: dadosBody.installments,  // Parcelamento
+        payment_method_id: dadosBody.paymentMethodId,
+        payer: {
+          email: dadosBody.email,  // Email do cliente
         },
-      });
-  
-      res.json({ paymentIntent });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: error.message });
-    }
-  })
+    };
+    const requestOptions = { idempotencyKey: '123ffsd33' }
 
-  app.get('/2.0/touccan/pagamento/cliente/status-pagamento', async (req, res) => {
-    const { paymentIntentId } = req.query;
-  
-    try {
-      const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
-      res.json({ status: paymentIntent.status });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: error.message });
-    }
-  })  
-  
+    payment.create({ paymentData, requestOptions })
+        .then((result) => {
+            console.log('DEU BOM!!!!');
+            console.log(result)
+        })
+        .catch((error) => {
+            console.log('ERRO!!!!!!');
+            console.log(error)
+        });
+})
 
 /** Usuário */
 app.post('/2.0/touccan/usuario', cors(), bodyParserJSON, async function(request, response){
