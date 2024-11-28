@@ -237,6 +237,21 @@ const selectCandidatesByAceitos = async(id) => {
     }
 }
 
+const selectBicoDetailsByID = async(id) => {
+    try {
+        let sql = `SELECT tbl_bico.titulo AS "bico", tbl_bico.salario, tbl_bico.data_inicio, tbl_bico.data_limite, tbl_bico.horario_inicio, tbl_bico.horario_limite, tbl_usuario.nome AS "nome_usuario", tbl_bico.id as "id_bico", tbl_usuario.id "id_usuario" FROM tbl_usuario_bico
+        JOIN tbl_bico  ON tbl_usuario_bico.id_bico=tbl_bico.id
+        JOIN tbl_usuario ON tbl_usuario_bico.id_usuario=tbl_usuario.id
+        WHERE tbl_bico.id=${id} AND tbl_usuario_bico.escolhido = 1;`
+        
+        let rs = await prisma.$queryRawUnsafe(sql)
+        return rs
+    } catch (error) {
+        console.error(error);
+        return false
+    }
+}
+
 const lastID = async function(){
     try {
         let sql = `SELECT id FROM tbl_bico ORDER BY id DESC LIMIT 1;`
@@ -263,6 +278,7 @@ module.exports={
     selectAllCandidates,
     selectCandidatesByBicoID,
     selectBicoClientPremium,
+    selectBicoDetailsByID,
     finalizarClient,
     finalizarUser,
     selectCandidatesByAceitos

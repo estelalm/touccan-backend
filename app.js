@@ -284,6 +284,13 @@ app.get('/2.0/touccan/bico/:id', cors(), async function(request, response){
     response.status(result.status_code)
     response.json(result)
 })
+app.get('/2.0/touccan/bico/historico/:id', cors(), async function(request, response){
+    let id = request.params.id
+    let result = await controller_bico.getBicoDetailsByID(id)
+    
+    response.status(result.status_code)
+    response.json(result)
+})
 app.get('/2.0/touccan/bico/pendente/:id', cors(), async function(request, response){
     let id = request.params.id
     let result = await controller_bico.getBicoPendent(id)
