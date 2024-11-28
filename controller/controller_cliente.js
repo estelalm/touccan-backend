@@ -150,6 +150,35 @@ const getHistoricoCliente = async function (id) {
         return message.ERROR_INTERNAL_SERVER
     }
 }
+
+const getClientRelations = async function(id){
+    try {
+        let idU = id
+        if (idU == '' || idU == null || isNaN(idU) || idU == undefined) 
+        {
+            return message.ERROR_INVALID_ID
+        }
+        else
+        {
+            let json = {}
+            let rtnUsuario = await clienteDAO.selectClientRelations(id)
+            if (rtnUsuario) {
+                if(rtnUsuario.length>0){
+                    json.usuarios=rtnUsuario
+                    json.status_code=200
+                    return json
+                }
+                else
+                    return message.ERROR_NOT_FOUND
+            } 
+            else 
+                return message.ERROR_INTERNAL_SERVER_DB    
+        }
+    } catch (error) {
+        return message.ERROR_INTERNAL_SERVER
+    }
+}
+
 const putClient = async function (data, contentType, id) {
     try {
         if (String(contentType).toLowerCase() !== 'application/json') {
@@ -442,6 +471,7 @@ module.exports = {
     putClientPremium,
     putClientPassword,
     putClientInfos,
+    getClientRelations,
     getClientId,
     callClientLogin,
     getHistoricoCliente,

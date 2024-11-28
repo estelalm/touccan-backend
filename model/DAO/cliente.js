@@ -181,6 +181,21 @@ const selectClienteId = async function(id){
     }
 }
 
+const selectClientRelations = async function(id) {
+    try {
+        let sql = `SELECT u.nome AS "nome_usuario", u.foto AS "foto_usuario", u.id AS "id_usuario" FROM tbl_usuario_bico AS c
+                   JOIN tbl_bico AS b ON c.id_bico=b.id
+                   JOIN tbl_usuario AS u ON c.id_usuario=u.id
+                   JOIN tbl_cliente AS cl ON b.id_cliente=cl.id
+                   WHERE c.escolhido = 1 AND cl.id=${id};`
+        let rs = await prisma.$queryRawUnsafe(sql)
+        return rs
+    } catch (error){
+        console.log(error);
+        return false
+    }
+}
+
 const selectClientForReturnBico = async function(id) {
     try {
         let sql = `SELECT id, nome_fantasia, cep FROM tbl_cliente WHERE id = ${id}`
@@ -253,7 +268,7 @@ const selectEnderecoId = async function(id){
 }
 const selectHistoricoCliente = async function (id) {
     try {
-        let sql = `select tbl_usuario.id, tbl_usuario.nome, tbl_usuario.foto, tbl_bico.id as "id_bico", tbl_bico.titulo, tbl_bico.data_limite, tbl_bico.horario_limite, tbl_bico.data_inicio, tbl_bico.finalizado, tbl_bico.horario_inicio from tbl_bico
+        let sql = `select tbl_usuario.id, tbl_usuario.nome, tbl_usuario.foto, tbl_bico.id as "id_bico", tbl_bico.descricao,tbl_bico.titulo, tbl_bico.salario, tbl_bico.data_limite, tbl_bico.horario_limite, tbl_bico.data_inicio, tbl_bico.finalizado, tbl_bico.horario_inicio from tbl_bico
         join tbl_usuario_bico on tbl_bico.id = tbl_usuario_bico.id_bico
         join tbl_usuario on tbl_usuario_bico.id_usuario = tbl_usuario.id
         where tbl_bico.id_cliente = ${id};`
@@ -278,6 +293,7 @@ module.exports ={
     lastID,
     insertEndereco,
     lastIDE,
+    selectClientRelations,
     selectEnderecoId,
     updateEndereco,
     selectHistoricoCliente
