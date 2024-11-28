@@ -268,7 +268,7 @@ const selectEnderecoId = async function(id){
 }
 const selectHistoricoCliente = async function (id) {
     try {
-        let sql = `select tbl_usuario.id, tbl_usuario.nome, tbl_usuario.foto, tbl_bico.id as "id_bico", tbl_bico.descricao,tbl_bico.titulo, tbl_bico.data_limite, tbl_bico.horario_limite, tbl_bico.data_inicio, tbl_bico.finalizado, tbl_bico.horario_inicio from tbl_bico
+        let sql = `select tbl_usuario.id, tbl_usuario.nome, tbl_usuario.foto, tbl_bico.id as "id_bico", tbl_bico.descricao,tbl_bico.titulo, tbl_bico.salario, tbl_bico.data_limite, tbl_bico.horario_limite, tbl_bico.data_inicio, tbl_bico.finalizado, tbl_bico.horario_inicio from tbl_bico
         join tbl_usuario_bico on tbl_bico.id = tbl_usuario_bico.id_bico
         join tbl_usuario on tbl_usuario_bico.id_usuario = tbl_usuario.id
         where tbl_bico.id_cliente = ${id};`

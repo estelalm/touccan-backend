@@ -370,6 +370,39 @@ const getBicoByCandidate = async function(id){
     }
 }
 
+const getBicoDetailsByID = async function(id){
+    try {
+        let idU = id
+        if (idU == '' || idU == null || isNaN(idU) || idU == undefined)
+            return message.ERROR_INVALID_ID
+        else
+        {
+            let json = {}
+            let rtnBico = await bicoDAO.selectBicoDetailsByID(id)
+            if (rtnBico) 
+            {
+                if (rtnBico.length > 0) 
+                {
+                    json.bicos=rtnBico
+                    json.quantidade=rtnBico.length
+                    json.status_code=200
+                    return json
+                } 
+                else 
+                {
+                    return message.ERROR_NOT_FOUND
+                }
+            } 
+            else 
+            {
+                return message.ERROR_INTERNAL_SERVER_DB    
+            }
+        }
+    } catch (error) {
+        return message.ERROR_INTERNAL_SERVER
+    }
+}
+
 const getBicoPendent = async function(id){
     try {
         let idU = id
@@ -737,6 +770,7 @@ module.exports={
     getBicoByCEP,
     getBicoByCandidate,
     getBicoPendent,
+    getBicoDetailsByID,
     getBicoByFilter,
     getBicoClientId,
     excluirBico,
