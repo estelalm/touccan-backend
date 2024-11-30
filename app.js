@@ -29,6 +29,7 @@ const controller_dificuldade = require('./controller/controller_dificuldade.js')
 const controller_avaliacao = require('./controller/controller_avaliacao.js')
 const controller_denuncia = require('./controller/controller_denuncia.js')
 const controller_feedback = require('./controller/controller_feedback.js')
+const controller_notificacao = require('./controller/controller_notificacao.js')
 
 /** PAGAMENTOS */
 
