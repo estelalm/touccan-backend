@@ -276,8 +276,11 @@ const getBico = async function() {
                     delete element.id_dificuldade
                     element.dificuldade = dif
                     let cli = await clienteDAO.selectClientForReturnBico(element.id_cliente)
+                    let id = cli[0]
+                    let end = await clienteDAO.selectEnderecoId(id.id_endereco)
                     delete element.id_cliente
                     element.cliente = cli
+                    element.id_endereco = end
                 }
                 json.bicos=data
                 json.quantidade=data.length
@@ -314,8 +317,11 @@ const getBicoByID = async function(id){
                     delete element.id_dificuldade
                     element.dificuldade = dif
                     let cli = await clienteDAO.selectClientForReturnBico(element.id_cliente)
+                    let id = cli[0]
+                    let end = await clienteDAO.selectEnderecoId(id.id_endereco)
                     delete element.id_cliente
                     element.cliente = cli
+                    element.id_endereco = end
 
                     json.bico = element
                     json.status = message.SUCCESS_FOUND_USER.status

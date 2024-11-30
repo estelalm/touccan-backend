@@ -198,7 +198,7 @@ const selectClientRelations = async function(id) {
 
 const selectClientForReturnBico = async function(id) {
     try {
-        let sql = `SELECT id, nome_fantasia, cep FROM tbl_cliente WHERE id = ${id}`
+        let sql = `SELECT id, nome_fantasia, cep, id_endereco FROM tbl_cliente WHERE id = ${id}`
         let rs = await prisma.$queryRawUnsafe(sql)
         return rs
     } catch (error) {
