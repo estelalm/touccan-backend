@@ -21,3 +21,8 @@ function sendNotificationToUser(fcmToken, title, body) {
       console.error("Erro ao enviar notificação:", error);
     });
 }
+
+
+module.exports={
+    sendNotificationToUser
+}

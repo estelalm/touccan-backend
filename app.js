@@ -9,6 +9,33 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const Stripe = require('stripe');
+const admin = require("firebase-admin");
+const { SecretManagerServiceClient } = require('@google-cloud/secret-manager');
+
+if (!admin.apps.length) {
+    async function initializeFirebase() {
+        const client = new SecretManagerServiceClient();
+      
+        // Substitua pelo nome do seu segredo
+        const firebaseSecret = 'projects/163685389659/secrets/firebase-service-account/versions/latest';
+      
+        // Acessa o segredo
+        const [version] = await client.accessSecretVersion({ name: firebaseSecret });
+        const serviceAccountKey = JSON.parse(version.payload.data.toString('utf8'));
+      
+        // Inicializa o Firebase
+        admin.initializeApp({
+          credential: admin.credential.cert(serviceAccountKey),
+        });
+      
+        console.log('Firebase inicializado com sucesso!');
+      }
+      
+  }
+
+
+const db = admin.firestore(); 
+
 const app = express()
 app.use((request, response, next) =>{
     response.header('Access-Control-Allow-Origin', '*')
@@ -310,6 +337,33 @@ app.put('/2.0/touccan/candidato', cors(), bodyParserJSON, async function(request
     let contentType=request.headers['content-type']
     let data=request.body
     let result=await controller_bico.putCandidate(data, contentType)
+
+    if (data.escolhido) {
+        const userId = data.id_user;
+
+        try {
+            // Buscar o token FCM do Firestore
+            const userRef = db.collection("users").doc(userId);
+            const userDoc = await userRef.get();
+
+            if (userDoc.exists) {
+                const fcmToken = userDoc.data().fcmToken;
+
+                // Enviar a notificação para o token FCM
+                controller_notificacao.sendNotificationToUser(
+                    fcmToken,
+                    "Parabéns!",
+                    "Você foi aceito na vaga."
+                );
+
+                console.log(`Notificação enviada para o usuário ${userId}`);
+            } else {
+                console.error(`Usuário ${userId} não encontrado no Firestore`);
+            }
+        } catch (error) {
+            console.error("Erro ao enviar notificação:", error);
+        }
+    }
     
     response.status(result.status_code)
     response.json(result)
