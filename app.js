@@ -25,7 +25,7 @@ const { initializeFirebase } = require('./controller/controller_notificacao');
   }
 })();
 
-
+   
 const app = express()
 app.use((request, response, next) =>{
     response.header('Access-Control-Allow-Origin', '*')
