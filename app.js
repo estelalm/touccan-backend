@@ -9,15 +9,8 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const Stripe = require('stripe');
-const admin = require("firebase-admin");
-const { SecretManagerServiceClient } = require('@google-cloud/secret-manager');
-
-const { initializeFirebase } = require("./controller/controller_notificacao");
-
-(async () => {
-  await initializeFirebase();
-  console.log("Aplicação pronta para usar Firebase!");
-})();
+const admin = require("firebase-admin")
+const { SecretManagerServiceClient } = require('@google-cloud/secret-manager')
 
 
 const app = express()
@@ -41,6 +34,7 @@ const controller_avaliacao = require('./controller/controller_avaliacao.js')
 const controller_denuncia = require('./controller/controller_denuncia.js')
 const controller_feedback = require('./controller/controller_feedback.js')
 const controller_notificacao = require('./controller/controller_notificacao.js')
+
 
 /** PAGAMENTOS */
 
