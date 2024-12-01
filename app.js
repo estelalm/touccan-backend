@@ -12,29 +12,13 @@ const Stripe = require('stripe');
 const admin = require("firebase-admin");
 const { SecretManagerServiceClient } = require('@google-cloud/secret-manager');
 
-if (!admin.apps.length) {
-    async function initializeFirebase() {
-        const client = new SecretManagerServiceClient();
-      
-        // Substitua pelo nome do seu segredo
-        const firebaseSecret = 'projects/163685389659/secrets/firebase-service-account/versions/latest';
-      
-        // Acessa o segredo
-        const [version] = await client.accessSecretVersion({ name: firebaseSecret });
-        const serviceAccountKey = JSON.parse(version.payload.data.toString('utf8'));
-      
-        // Inicializa o Firebase
-        admin.initializeApp({
-          credential: admin.credential.cert(serviceAccountKey),
-        });
-      
-        console.log('Firebase inicializado com sucesso!');
-      }
-      
-  }
+const { initializeFirebase } = require("./controller/controller_notificacao");
 
+(async () => {
+  await initializeFirebase();
+  console.log("Aplicação pronta para usar Firebase!");
+})();
 
-const db = admin.firestore(); 
 
 const app = express()
 app.use((request, response, next) =>{
