@@ -12,6 +12,19 @@ const Stripe = require('stripe');
 const admin = require("firebase-admin")
 const { SecretManagerServiceClient } = require('@google-cloud/secret-manager')
 
+/* A controller de notificação para inicializar o firebase */
+const { initializeFirebase } = require('./controller/controller_notificacao');
+
+(async () => {
+  try {
+    // Inicializa o Firebase
+    await initializeFirebase();
+    console.log("Aplicação pronta para usar Firebase!");
+  } catch (error) {
+    console.error("Erro ao inicializar a aplicação:", error);
+  }
+})();
+
 
 const app = express()
 app.use((request, response, next) =>{

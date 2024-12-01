@@ -1,20 +1,18 @@
 const admin = require("firebase-admin")
-const { SecretManagerServiceClient } = require("@google-cloud/secret-manager")
+const path = require('path');  // Para ajudar a construir o caminho para o arquivo de credenciais
 
 async function initializeFirebase() {
   if (!admin.apps.length) {
     try {
       console.log("Inicializando Firebase...")
 
-      const client = new SecretManagerServiceClient()
-      const firebaseSecret = 'projects/163685389659/secrets/firebase-service-account/versions/latest'
+      // Caminho do arquivo de credenciais local
+      const serviceAccountPath = path.join(__dirname, '..', 'config', 'touccan-firebase-firebase-adminsdk-8nuq5-acd9746fd3.json');
 
-      const [version] = await client.accessSecretVersion({ name: firebaseSecret })
-      const serviceAccountKey = JSON.parse(version.payload.data.toString("utf8"))
-
+      // Inicializando o Firebase com o arquivo de credenciais
       admin.initializeApp({
-        credential: admin.credential.cert(serviceAccountKey),
-      })
+        credential: admin.credential.cert(serviceAccountPath), // Usando o caminho do arquivo JSON
+      });
 
       console.log("Firebase inicializado com sucesso!")
     } catch (error) {
@@ -23,8 +21,6 @@ async function initializeFirebase() {
   }
 }
 
-
-
 function sendNotificationToUser(fcmToken, title, body) {
   const message = {
     token: fcmToken,
@@ -32,7 +28,7 @@ function sendNotificationToUser(fcmToken, title, body) {
       title: title,
       body: body,
     },
-  }
+  };
 
   admin.messaging().send(message)
     .then((response) => {
@@ -43,9 +39,7 @@ function sendNotificationToUser(fcmToken, title, body) {
     })
 }
 
-
-
-module.exports={
-    sendNotificationToUser,
-    initializeFirebase
-}
+module.exports = {
+  sendNotificationToUser,
+  initializeFirebase,
+};
