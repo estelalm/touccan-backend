@@ -8,7 +8,6 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
-const Stripe = require('stripe');
 const admin = require("firebase-admin")
 const { SecretManagerServiceClient } = require('@google-cloud/secret-manager')
 
@@ -63,42 +62,55 @@ const client = new MercadoPagoConfig(
 );
 const payment = new Payment(client);
 
-app.post('/criar-pagamento',cors(), bodyParserJSON, async function(request, response){
-    const dadosBody=request.body
-    // const body = {
-    //     transaction_amount: dadosBody.transaction_amount,
-    //     description: dadosBody.description,
-    //     payment_method_id: dadosBody.paymentMethodId,
-    //     payer: {
-    //         email: dadosBody.email,
-    //         identification: {
-    //             type: dadosBody.identificationType,
-    //             number: dadosBody.number
-    //         }
-    //     }
-    // }
-    const paymentData = {
-        transaction_amount: dadosBody.amount, // Valor da transação
-        token: dadosBody.token,  // Token do cartão
-        description: 'Descrição do produto',
-        installments: dadosBody.installments,  // Parcelamento
-        payment_method_id: dadosBody.paymentMethodId,
-        payer: {
-          email: dadosBody.email,  // Email do cliente
-        },
-    };
-    const requestOptions = { idempotencyKey: '123ffsd33' }
+const bodyParser = require('body-parser');
+const mercadopago = require('mercadopago');  // SDK do Mercado Pago
 
-    payment.create({ paymentData, requestOptions })
-        .then((result) => {
-            console.log('DEU BOM!!!!');
-            console.log(result)
-        })
-        .catch((error) => {
-            console.log('ERRO!!!!!!');
-            console.log(error)
+// Endpoint para criar o pagamento
+app.post('/criar-pagamento', async (req, res) => {
+    const dadosBody = req.body;
+
+    // Dados do pagamento (transação)
+    const paymentData = {
+        transaction_amount: dadosBody.amount,  // Valor da transação
+        token: dadosBody.token,  // Token do cartão
+        description: 'Descrição do produto',  // Descrição do produto/serviço
+        installments: dadosBody.installments,  // Número de parcelas
+        payment_method_id: dadosBody.paymentMethodId,  // Método de pagamento (cartão, boleto, etc)
+        payer: {
+            email: dadosBody.email,  // Email do cliente
+            identification: {
+                type: dadosBody.identificationType,  // Tipo de documento (ex: CPF ou CNPJ)
+                number: dadosBody.number  // Número do documento (ex: CPF ou CNPJ)
+            }
+        }
+    };
+    try {
+        const result = await mercadopago.payment.create(paymentData);
+        if (result.status === 201) {
+            // Pagamento bem-sucedido
+            console.log("funfou");
+            
+            res.status(200).json({
+                message: 'Pagamento realizado com sucesso',
+                payment: result.body  // Retorna os detalhes do pagamento
+            });
+        } else {
+            console.log("nao rolou");
+            
+            // Se houver um erro ao processar o pagamento
+            res.status(400).json({
+                message: 'Erro ao processar pagamento',
+                error: result.body
+            });
+        }
+    } catch (error) {
+        console.error('Erro ao criar pagamento:', error);
+        res.status(500).json({
+            message: 'Erro ao processar pagamento',
+            error: error.message
         });
-})
+    }
+});
 
 /** Usuário */
 app.post('/2.0/touccan/usuario', cors(), bodyParserJSON, async function(request, response){
