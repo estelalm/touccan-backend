@@ -62,7 +62,6 @@ const client = new MercadoPagoConfig(
 );
 const payment = new Payment(client);
 
-const bodyParser = require('body-parser');
 const mercadopago = require('mercadopago');  // SDK do Mercado Pago
 
 // Endpoint para criar o pagamento
