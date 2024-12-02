@@ -51,54 +51,59 @@ const controller_notificacao = require('./controller/controller_notificacao.js')
 
 /** PAGAMENTOS */
 
-const { MercadoPagoConfig, Payment, MercadoPago } = require('mercadopago')
-const client = new MercadoPagoConfig(
-    {
-        accessToken: 'APP_USR-7186513777788039-091623-be1b55d679dcfeaec50e2646381835b5-473604831',
-        options: {
-            timeout: 5000,
-            idempotencyKey: 'abccfcccc'
-        }
-    }
-);
-const payment = new Payment(client);
+const mercadopago = require('mercadopago');  // SDK do Mercado Pago
 
-app.post('/criar-pagamento',cors(), bodyParserJSON, async function(request, response){
-    const dadosBody=request.body
-    // const body = {
-    //     transaction_amount: dadosBody.transaction_amount,
-    //     description: dadosBody.description,
-    //     payment_method_id: dadosBody.paymentMethodId,
-    //     payer: {
-    //         email: dadosBody.email,
-    //         identification: {
-    //             type: dadosBody.identificationType,
-    //             number: dadosBody.number
-    //         }
-    //     }
-    // }
+// Configuração do Mercado Pago com o seu access token
+mercadopago.configurations.setAccessToken('APP_USR-7186513777788039-091623-be1b55d679dcfeaec50e2646381835b5-473604831');
+
+// Endpoint para criar o pagamento
+app.post('/criar-pagamento', async (req, res) => {
+    const dadosBody = req.body;
+
+    // Dados do pagamento (transação)
     const paymentData = {
-        transaction_amount: dadosBody.amount, // Valor da transação
+        transaction_amount: dadosBody.amount,  // Valor da transação
         token: dadosBody.token,  // Token do cartão
-        description: 'Descrição do produto',
-        installments: dadosBody.installments,  // Parcelamento
-        payment_method_id: dadosBody.paymentMethodId,
+        description: 'Descrição do produto',  // Descrição do produto/serviço
+        installments: dadosBody.installments,  // Número de parcelas
+        payment_method_id: dadosBody.paymentMethodId,  // Método de pagamento (cartão, boleto, etc)
         payer: {
-          email: dadosBody.email,  // Email do cliente
-        },
+            email: dadosBody.email,  // Email do cliente
+            identification: {
+                type: dadosBody.identificationType,  // Tipo de documento (ex: CPF ou CNPJ)
+                number: dadosBody.number  // Número do documento (ex: CPF ou CNPJ)
+            }
+        }
     };
-    const requestOptions = { idempotencyKey: '123ffsd33' }
 
-    payment.create({ paymentData, requestOptions })
-        .then((result) => {
-            console.log('DEU BOM!!!!');
-            console.log(result)
-        })
-        .catch((error) => {
-            console.log('ERRO!!!!!!');
-            console.log(error)
+    try {
+        const result = await mercadopago.payment.create(paymentData);
+
+        if (result.status === 201) {
+            // Pagamento bem-sucedido
+            console.log("Pagamento criado com sucesso!");
+            
+            res.status(200).json({
+                message: 'Pagamento realizado com sucesso',
+                payment: result.body  // Retorna os detalhes do pagamento
+            });
+        } else {
+            console.log("Erro no pagamento: ", result.body);
+            
+            // Se houver um erro ao processar o pagamento
+            res.status(400).json({
+                message: 'Erro ao processar pagamento',
+                error: result.body
+            });
+        }
+    } catch (error) {
+        console.error('Erro ao criar pagamento:', error);
+        res.status(500).json({
+            message: 'Erro ao processar pagamento',
+            error: error.message
         });
-})
+    }
+});
 
 /** Usuário */
 app.post('/2.0/touccan/usuario', cors(), bodyParserJSON, async function(request, response){
