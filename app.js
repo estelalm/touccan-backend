@@ -50,15 +50,55 @@ const controller_notificacao = require('./controller/controller_notificacao.js')
 
 
 /** PAGAMENTOS */
+const mercadopago = require('mercadopago');
+app.use(express.json());
 
-const mercadopago = require('mercadopago');  // SDK do Mercado Pago
-
-// Configuração do Mercado Pago com o seu access token
-mercadopago.configurations.setAccessToken('APP_USR-7186513777788039-091623-be1b55d679dcfeaec50e2646381835b5-473604831');
+// Configuração do MercadoPago com o accessToken
+mercadopago.configurations = {
+  access_token: 'APP_USR-7186513777788039-091623-be1b55d679dcfeaec50e2646381835b5-473604831'
+};
 
 // Endpoint para criar o pagamento
 app.post('/criar-pagamento', async (req, res) => {
     const dadosBody = req.body;
+
+    console.log('Dados recebidos:', dadosBody); // Verifique os dados recebidos
+
+    // Validação mais detalhada para identificar o campo que falta
+    if (!dadosBody) {
+        return res.status(400).json({
+            message: 'Corpo da requisição não recebido.',
+            error: 'Corpo da requisição vazio.'
+        });
+    }
+
+    if (!dadosBody.amount) {
+        return res.status(400).json({
+            message: 'Campo "amount" ausente.',
+            error: 'O valor da transação não foi fornecido.'
+        });
+    }
+
+    if (!dadosBody.token) {
+        return res.status(400).json({
+            message: 'Campo "token" ausente.',
+            error: 'O token do cartão não foi fornecido.'
+        });
+    }
+
+    if (!dadosBody.paymentMethodId) {
+        return res.status(400).json({
+            message: 'Campo "paymentMethodId" ausente.',
+            error: 'O método de pagamento não foi fornecido.'
+        });
+    }
+
+    if (!dadosBody.email) {
+        return res.status(400).json({
+            message: 'Campo "email" ausente.',
+            error: 'O email do cliente não foi fornecido.'
+        });
+    }
 
     // Dados do pagamento (transação)
     const paymentData = {
@@ -77,19 +117,16 @@ app.post('/criar-pagamento', async (req, res) => {
     };
 
     try {
-        const result = await mercadopago.payment.create(paymentData);
+        // Criando o pagamento com a API do MercadoPago
+        const result = await mercadopago.payment.create(paymentData); // Garantir que mercadopago.payment está correto
 
         if (result.status === 201) {
             // Pagamento bem-sucedido
-            console.log("Pagamento criado com sucesso!");
-            
             res.status(200).json({
                 message: 'Pagamento realizado com sucesso',
                 payment: result.body  // Retorna os detalhes do pagamento
             });
         } else {
-            console.log("Erro no pagamento: ", result.body);
-            
             // Se houver um erro ao processar o pagamento
             res.status(400).json({
                 message: 'Erro ao processar pagamento',
