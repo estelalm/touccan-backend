@@ -506,6 +506,49 @@ const enviarEmail = async function(data, contentType) {
     }
 }
 
+const enviarToken = async function(data, contentType) {
+    try {
+        if (String(contentType).toLowerCase() == 'application/json'){
+            if(
+                data.email==null||data.email==undefined||data.email==''
+            )
+                return message.ERROR_NOT_FOUND
+            else{
+                let token = Math.floor(100000 + Math.random() * 900000);
+
+                let transporter = nodemailer.createTransport({
+                    service: 'gmail', // Pode ser outro serviço como 'hotmail', 'yahoo', etc.
+                    auth: {
+                        user: 'noreply.touccan@gmail.com', // email do noreply (pra recuperaçao de senha e etc)
+                        //user: 'contato.touccan@gmail.com',   // email do contato (pra enviar emails tipo reclamações)
+                        pass: 'hsmx ibcb swga ggag'        // senha do noreply
+                        //pass: 'snbt dqeb rnrj ossm'          // senha do contato
+                    }
+                });
+        
+                let info = await transporter.sendMail({
+                    from: '"Touccan" <noreply.touccan@gmail.com>', // Remetente
+                    to: data.email,               // Destinatário
+                    subject: "Token para recuperação de senha",      // Assunto
+                    text: `Aqui está o seu token: ${token}. Não passe ele para ninguém.` // Corpo do e-mail em texto simples
+                });
+        
+                let json = {}
+                        json.token = token
+                        json.status = message.SUCCESS_CREATED_ITEM.status
+                        json.status_code = message.SUCCESS_CREATED_ITEM.status_code
+                        json.message = message.SUCCESS_CREATED_ITEM.message
+    
+                        return json
+            }
+        }
+        else
+            return message.ERROR_CONTENT_TYPE
+    } catch (error) {
+        console.error('Erro ao enviar e-mail:', error);
+    }
+}
+
 module.exports = {
     getClient,
     postClient,
@@ -519,5 +562,6 @@ module.exports = {
     callClientLogin,
     getHistoricoCliente,
     getEndereco,
-    enviarEmail
+    enviarEmail,
+    enviarToken
 }

@@ -227,6 +227,14 @@ app.post('/2.0/touccan/enviar-email', cors(), bodyParserJSON, async function(req
     response.status(result.status_code)
     response.json(result)
 })
+app.post('/2.0/touccan/enviar-token', cors(), bodyParserJSON, async function(request, response){
+    let contentType = request.headers['content-type']
+    let data = request.body
+    let result = await controller_cliente.enviarToken(data, contentType)
+    
+    response.status(result.status_code)
+    response.json(result)
+})
 app.get('/2.0/touccan/cliente/historico/:id', cors(), async function(request, response){
     let id = request.params.id
     let result = await controller_cliente.getHistoricoCliente(id)
