@@ -142,6 +142,56 @@ app.post('/criar-pagamento', async (req, res) => {
     }
 });
 
+// Endpoint para processar o pagamento
+app.post('/processar-pagamento', async (req, res) => {
+    const dadosBody = req.body;
+
+    console.log('Dados recebidos:', dadosBody);  // Verifique os dados recebidos
+
+    if (!dadosBody.token) {
+        return res.status(400).json({ message: 'Campo "token" ausente.' });
+    }
+
+    const paymentData = {
+        transaction_amount: dadosBody.amount,  // Valor da transação
+        token: dadosBody.token,  // Token gerado
+        description: 'Descrição do produto',  // Descrição do produto
+        installments: dadosBody.installments,  // Número de parcelas
+        payment_method_id: dadosBody.paymentMethodId,  // Método de pagamento (visa, mastercard, etc)
+        payer: {
+            email: dadosBody.email,  // Email do cliente
+            identification: {
+                type: dadosBody.identificationType,  // Tipo de documento (CPF ou CNPJ)
+                number: dadosBody.number  // Número do documento
+            }
+        }
+    };
+
+    try {
+        // Criando o pagamento com a API do MercadoPago
+        const result = await mercadopago.payment.create(paymentData);
+
+        if (result.status === 201) {
+            res.status(200).json({
+                message: 'Pagamento realizado com sucesso',
+                payment: result.body
+            });
+        } else {
+            res.status(400).json({
+                message: 'Erro ao processar pagamento',
+                error: result.body
+            });
+        }
+    } catch (error) {
+        console.error('Erro ao criar pagamento:', error);
+        res.status(500).json({
+            message: 'Erro ao processar pagamento',
+            error: error.message
+        });
+    }
+});
+
+
 /** Usuário */
 app.post('/2.0/touccan/usuario', cors(), bodyParserJSON, async function(request, response){
     let contentType = request.headers['content-type']
