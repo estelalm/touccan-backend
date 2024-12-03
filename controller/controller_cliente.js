@@ -1,5 +1,6 @@
 const clienteDAO = require('../model/DAO/cliente.js')
 const message = require('./modulo/config.js')
+const nodemailer = require('nodemailer')
 
 const postClient = async function (data, contentType) {
     try {
@@ -463,6 +464,48 @@ const callClientLogin = async function(data, contentType){
     }
 }
 
+const enviarEmail = async function(data, contentType) {
+    try {
+        if (String(contentType).toLowerCase() == 'application/json'){
+            if(
+                data.assunto==null||data.assunto==undefined||data.assunto==''||
+                data.corpo==null||data.corpo==undefined||data.corpo==''
+            )
+                return message.ERROR_NOT_FOUND
+            else{
+                let transporter = nodemailer.createTransport({
+                    service: 'gmail', // Pode ser outro serviço como 'hotmail', 'yahoo', etc.
+                    auth: {
+                        //user: 'noreply.touccan@gmail.com', // email do noreply (pra recuperaçao de senha e etc)
+                        user: 'contato.touccan@gmail.com',   // email do contato (pra enviar emails tipo reclamações)
+                        //pass: 'hsmx ibcb swga ggag'        // senha do noreply
+                        pass: 'snbt dqeb rnrj ossm'          // senha do contato
+                    }
+                });
+        
+                let info = await transporter.sendMail({
+                    from: '"Touccan" <contato.touccan@gmail.com>', // Remetente
+                    to: 'contato.touccan@gmail.com',               // Destinatário
+                    subject: data.assunto,                              // Assunto
+                    text: data.corpo                                    // Corpo do e-mail em texto simples
+                });
+        
+                let json = {}
+                        json.email = data.corpo
+                        json.status = message.SUCCESS_CREATED_ITEM.status
+                        json.status_code = message.SUCCESS_CREATED_ITEM.status_code
+                        json.message = message.SUCCESS_CREATED_ITEM.message
+    
+                        return json
+            }
+        }
+        else
+            return message.ERROR_CONTENT_TYPE
+    } catch (error) {
+        console.error('Erro ao enviar e-mail:', error);
+    }
+}
+
 module.exports = {
     getClient,
     postClient,
@@ -475,5 +518,6 @@ module.exports = {
     getClientId,
     callClientLogin,
     getHistoricoCliente,
-    getEndereco
+    getEndereco,
+    enviarEmail
 }
