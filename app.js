@@ -98,14 +98,6 @@ app.post('/criar-pagamento', async (req, res) => {
             error: 'O email do cliente não foi fornecido.'
         });
     }
-);
-const payment = new Payment(client);
-
-const mercadopago = require('mercadopago');  // SDK do Mercado Pago
-
-// Endpoint para criar o pagamento
-app.post('/criar-pagamento', async (req, res) => {
-    const dadosBody = req.body;
 
     // Dados do pagamento (transação)
     const paymentData = {
@@ -134,7 +126,7 @@ app.post('/criar-pagamento', async (req, res) => {
                 payment: result.body  // Retorna os detalhes do pagamento
             });
         } else {
-            console.log("nao rolou");
+            // Se houver um erro ao processar o pagamento
             res.status(400).json({
                 message: 'Erro ao processar pagamento',
                 error: result.body
@@ -196,7 +188,7 @@ app.post('/processar-pagamento', async (req, res) => {
             error: error.message
         });
     }
-});
+})
 
 /** Usuário */
 app.post('/2.0/touccan/usuario', cors(), bodyParserJSON, async function(request, response){
