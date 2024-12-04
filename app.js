@@ -8,7 +8,6 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
-const Stripe = require('stripe');
 const admin = require("firebase-admin")
 const { SecretManagerServiceClient } = require('@google-cloud/secret-manager')
 
@@ -99,6 +98,14 @@ app.post('/criar-pagamento', async (req, res) => {
             error: 'O email do cliente não foi fornecido.'
         });
     }
+);
+const payment = new Payment(client);
+
+const mercadopago = require('mercadopago');  // SDK do Mercado Pago
+
+// Endpoint para criar o pagamento
+app.post('/criar-pagamento', async (req, res) => {
+    const dadosBody = req.body;
 
     // Dados do pagamento (transação)
     const paymentData = {
@@ -127,7 +134,7 @@ app.post('/criar-pagamento', async (req, res) => {
                 payment: result.body  // Retorna os detalhes do pagamento
             });
         } else {
-            // Se houver um erro ao processar o pagamento
+            console.log("nao rolou");
             res.status(400).json({
                 message: 'Erro ao processar pagamento',
                 error: result.body
@@ -190,7 +197,6 @@ app.post('/processar-pagamento', async (req, res) => {
         });
     }
 });
-
 
 /** Usuário */
 app.post('/2.0/touccan/usuario', cors(), bodyParserJSON, async function(request, response){
